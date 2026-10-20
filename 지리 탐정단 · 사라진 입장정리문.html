@@ -1,0 +1,1505 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>지리 탐정단 · 사라진 입장정리문</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+[hidden]{display:none!important}
+:root{
+  --bg:#E4D2A3; --panel:#EFE2BF; --panel2:#F6ECD3; --paper:#FBF7EC; --paper-ink:#1C2236;
+  --ink:#1C2236; --muted:#5E5743; --line:#BCA673; --accent:#B23A35; --mark:#8A5A00; --ok:#2E6B3F;
+  --land:#EADBB2; --plateau:#D9C48F; --sea:#A9C3C9; --river:#2F6F8F; --mount:#8C7A52;
+  --shadow:0 10px 24px rgba(60,40,0,.18);
+  --serif:"Gowun Batang","Nanum Myeongjo","AppleMyungjo","Batang",Georgia,serif;
+  --sans:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1424; --panel:#151D31; --panel2:#1B2440; --paper:#ECEFF5; --paper-ink:#141A2B;
+  --ink:#E8ECF4; --muted:#A2AAC0; --line:#2E3958; --accent:#E06A62; --mark:#F2B544; --ok:#6FCF8E;
+  --land:#1A2338; --plateau:#232E4A; --sea:#10283A; --river:#5FB3D6; --mount:#5A6788; --shadow:0 12px 28px rgba(0,0,0,.45);}}
+:root[data-theme="dark"]{
+  --bg:#0E1424; --panel:#151D31; --panel2:#1B2440; --paper:#ECEFF5; --paper-ink:#141A2B;
+  --ink:#E8ECF4; --muted:#A2AAC0; --line:#2E3958; --accent:#E06A62; --mark:#F2B544; --ok:#6FCF8E;
+  --land:#1A2338; --plateau:#232E4A; --sea:#10283A; --river:#5FB3D6; --mount:#5A6788; --shadow:0 12px 28px rgba(0,0,0,.45);}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16.5px;line-height:1.65;word-break:keep-all;overflow-wrap:anywhere}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--mark);outline-offset:2px}
+.wrap{max-width:1280px;margin:0 auto;padding:16px 18px 40px}
+header.top{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:flex-end;justify-content:space-between;border-bottom:2px solid var(--ink);padding-bottom:12px}
+.case{font-family:var(--serif);font-weight:700;font-size:clamp(26px,3.8vw,40px);line-height:1.1;margin:0}
+.case small{display:block;font-size:.42em;font-weight:400;color:var(--muted);margin-bottom:4px}
+.status{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;font-size:15px}
+.days{display:flex;align-items:center;gap:8px}
+.days b{font-family:var(--serif);font-size:24px}
+.cal{display:flex;gap:3px}
+.cal i{width:9px;height:18px;border-radius:2px;background:var(--ink);opacity:.85}
+.cal i.used{opacity:.15}
+.met{display:flex;gap:4px}
+.met span{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;border:1.5px dashed var(--line);font-family:var(--serif);font-weight:700;font-size:14px;color:var(--muted)}
+.met span.on{border-style:solid;border-color:var(--ink);background:var(--ink);color:var(--bg)}
+.meter{display:flex;align-items:center;gap:8px}
+.meter .bar{width:110px;height:10px;border-radius:5px;background:var(--panel2);border:1px solid var(--line);overflow:hidden}
+.meter .bar i{display:block;height:100%;background:var(--accent);transition:width .6s}
+.btn{padding:9px 16px;border-radius:8px;border:1.5px solid var(--ink);background:var(--ink);color:var(--bg);font-weight:500}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.small{padding:6px 12px;font-size:14px}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.game{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(330px,1fr);gap:18px;margin-top:16px;align-items:start}
+@media (max-width:900px){.game{grid-template-columns:1fr}}
+.mapbox{background:var(--panel);border:1.5px solid var(--line);border-radius:12px;padding:8px;position:sticky;top:8px}
+@media (max-width:900px){.mapbox{position:static}}
+svg.map{display:block;width:100%;height:auto}
+.map .land{fill:var(--land)} .map .plateau{fill:var(--plateau)} .map .sea{fill:var(--sea)}
+.map .river{fill:none;stroke:var(--river);stroke-width:4.5;stroke-linecap:round;stroke-linejoin:round}
+.map .river2{fill:none;stroke:var(--river);stroke-width:2;opacity:.5}
+.map .mtn{fill:var(--mount);opacity:.55}
+.map .zone{fill:none;stroke:var(--accent);stroke-width:1.5;stroke-dasharray:4 4;opacity:.7}
+.map .lbl{font-family:var(--serif);font-size:24px;fill:var(--muted);font-weight:700}
+.map .lbl.sm{font-size:17px;font-weight:400;font-family:var(--sans)}
+.map .road{stroke:var(--ink);stroke-width:2;stroke-dasharray:3 6;opacity:.35;fill:none}
+.map .road.live{opacity:.9;stroke-width:3}
+.map .node{cursor:default}
+.map .node circle.dot{fill:var(--paper);stroke:var(--ink);stroke-width:3}
+.map .node.visited circle.dot{fill:var(--ink)}
+.map .node.reach{cursor:pointer}
+.map .node.reach circle.ring{fill:none;stroke:var(--mark);stroke-width:3;animation:pulse 1.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.map .node text{font-size:21px;font-weight:500;fill:var(--ink);paint-order:stroke;stroke:var(--land);stroke-width:5px;stroke-linejoin:round}
+.map .node .cost{font-size:18px;fill:var(--mark);font-weight:700}
+.map .node.fresh > *{animation:appear .8s ease-out}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.35);opacity:.3}}
+@keyframes appear{0%{opacity:0}100%{opacity:1}}
+.map #token circle{fill:var(--accent)}
+.map .lbl.riv{fill:var(--river);font-style:italic}
+.map .lbl.big{font-size:40px;letter-spacing:.3em;opacity:.8}
+.map .lbl.sea{fill:color-mix(in srgb,var(--river) 70%,var(--ink));font-style:italic;font-size:26px}
+.map .lbl.terr{font-style:italic;opacity:.8}
+.map .lbl.area{fill:var(--accent);font-family:var(--sans);font-weight:700;font-size:20px}
+.map .areabox{fill:none;stroke:var(--accent);stroke-width:2;stroke-dasharray:5 5}
+.map.far .node text,.map.far .lbl.inreg{display:none}
+.map:not(.far) .areabox,.map:not(.far) .lbl.area{display:none}
+.map .lbl.zl{fill:var(--accent)}
+.map .lbl.city{font-family:var(--sans);font-weight:500}
+.map circle.city{fill:var(--muted)}
+.map .node.here circle.dot{stroke:var(--accent);stroke-width:4}
+.zoombar{position:absolute;top:14px;right:14px;z-index:2;display:flex;border:1.5px solid var(--ink);border-radius:8px;overflow:hidden;background:var(--panel2)}
+.zoombar button{border:0;background:transparent;padding:6px 11px;font-size:13.5px}
+.zoombar button+button{border-left:1.5px solid var(--ink)}
+.zoombar button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.zoombar button:disabled{opacity:.4}
+
+.mapnote{font-size:12.5px;color:var(--muted);margin:4px 6px 2px}
+.side{display:flex;flex-direction:column;gap:12px}
+.card{background:var(--panel);border:1.5px solid var(--line);border-radius:12px;padding:18px}
+.card h2{font-family:var(--serif);font-size:24px;margin:0 0 2px;line-height:1.3}
+.card .where{font-size:14px;color:var(--muted)}
+.card p{margin:10px 0}
+.acts{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.act{display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;padding:11px 14px;border-radius:9px;border:1.5px solid var(--ink);background:var(--panel2)}
+.act:hover:not(:disabled){background:var(--ink);color:var(--bg)}
+.act:disabled{opacity:.45;cursor:not-allowed}
+.act .c{font-size:13px;white-space:nowrap;color:var(--mark);font-weight:700}
+.act:hover:not(:disabled) .c{color:var(--bg)}
+.act small{display:block;font-size:13px;opacity:.75}
+.sub{font-size:14px;font-weight:700;color:var(--muted);margin:14px 0 4px}
+.dispatch{background:var(--paper);color:var(--paper-ink);border-radius:4px;padding:20px 22px;box-shadow:var(--shadow);font-family:var(--serif);font-size:17px;line-height:1.8}
+.dispatch .flash{display:inline-block;background:#B23A35;color:#fff;font-family:var(--sans);font-weight:700;font-size:13px;padding:1px 9px;border-radius:3px;margin-bottom:8px}
+.dispatch p{margin:0 0 10px}
+.field{display:flex;flex-direction:column;gap:4px;margin:12px 0}
+.field input{padding:9px 11px;border:1.5px solid var(--line);border-radius:8px;background:var(--panel2)}
+.npc{display:flex;gap:14px;align-items:center}
+.face{flex:0 0 58px;height:58px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-family:var(--serif);font-weight:700;font-size:26px}
+.log{display:flex;flex-direction:column;gap:9px;margin-top:12px;max-height:46vh;overflow-y:auto;padding-right:4px}
+.msg{padding:10px 13px;border-radius:10px;font-size:15.5px;white-space:pre-wrap;max-width:92%}
+.msg.q{align-self:flex-end;background:var(--ink);color:var(--bg)}
+.msg.a{align-self:flex-start;background:var(--paper);color:var(--paper-ink);font-family:var(--serif)}
+.msg.cold{border:2px dashed #B23A35}
+.msg .got{display:block;margin-top:6px;font-family:var(--sans);font-size:13px;color:#2E6B3F;font-weight:700}
+.msg .lost{display:block;margin-top:6px;font-family:var(--sans);font-size:13px;color:#B23A35;font-weight:700}
+.qs{display:flex;flex-direction:column;gap:7px;margin-top:12px}
+.qs button{text-align:left;padding:9px 12px;border-radius:8px;border:1.5px solid var(--ink);background:transparent;font-size:15px}
+.qs button:hover:not(:disabled){background:var(--ink);color:var(--bg)}
+.qs button:disabled{opacity:.4;cursor:not-allowed}
+.qs button.used{text-decoration:line-through;opacity:.3}
+.free{display:flex;gap:8px;margin-top:10px}
+.free input{flex:1;min-width:0;padding:9px 11px;border:1.5px solid var(--line);border-radius:8px;background:var(--bg)}
+.note{font-size:13.5px;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:15px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .3s;z-index:30;max-width:90vw;text-align:center}
+.toast.on{opacity:1}
+dialog{border:0;border-radius:12px;padding:0;max-width:min(680px,94vw);width:100%;background:var(--panel);color:var(--ink);box-shadow:var(--shadow)}
+dialog::backdrop{background:rgba(10,14,25,.55)}
+.dlg{padding:22px 24px}
+.dlg h3{font-family:var(--serif);font-size:24px;margin:0 0 6px}
+.dlg .row{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.event-ic{font-size:40px;line-height:1}
+.coin{display:inline-block;animation:flip .25s linear infinite}
+.coin.done{animation:none}
+@keyframes flip{0%{transform:scaleX(1)}50%{transform:scaleX(.1)}100%{transform:scaleX(1)}}
+.nb-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.nb-tabs button{padding:6px 12px;border-radius:999px;border:1.5px solid var(--ink);background:transparent;font-size:14px}
+.nb-tabs button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.clue{background:var(--paper);color:var(--paper-ink);border-radius:6px;padding:10px 12px;margin:8px 0;font-size:15px}
+.clue b{font-size:12.5px;display:inline-block;padding:0 7px;border-radius:4px;background:#1C2236;color:#fff;margin-right:6px;font-weight:500}
+.clue b.k-근거{background:#2E6B3F}.clue b.k-지형{background:#8A5A00}.clue b.k-주장{background:#B23A35}
+.article{background:var(--paper);color:var(--paper-ink);padding:20px 22px;border-radius:4px;font-family:var(--serif);font-size:16.5px;line-height:1.85;box-shadow:var(--shadow)}
+.article h4{margin:0 0 10px;font-size:20px}
+.redact{background:#1C2236;color:transparent;border-radius:2px;user-select:none}
+.restored{background:rgba(242,181,68,.28)}
+.lineup{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.lineup button{text-align:left;padding:11px 14px;border-radius:9px;border:1.5px solid var(--line);background:var(--panel2)}
+.lineup button:hover:not(:disabled){border-color:var(--ink)}
+.lineup button.x{text-decoration:line-through;opacity:.5}
+.result{margin-top:12px;padding:12px 14px;border-radius:9px;border:1.5px solid var(--accent);background:var(--panel2)}
+.ending{background:var(--paper);color:var(--paper-ink);padding:22px 24px;border-radius:4px;box-shadow:var(--shadow);position:relative;margin-top:14px}
+.ending .tier{font-size:13.5px;color:#5a5a70;display:block;padding-right:120px}
+.ending .big{font-family:var(--serif);font-weight:700;font-size:26px;line-height:1.35;margin:4px 0 10px}
+.ending p{margin:0 0 8px}
+.ending ul{margin:4px 0 8px;padding-left:20px}
+.stamp{position:absolute;top:16px;right:16px;transform:rotate(-12deg);border:3px solid #B23A35;color:#B23A35;font-weight:700;padding:2px 10px;border-radius:6px;font-size:16px;background:rgba(255,255,255,.6)}
+textarea.big{width:100%;min-height:200px;padding:10px 12px;border:1.5px solid var(--line);border-radius:8px;background:var(--bg);resize:vertical}
+.article.mine{border-left:5px solid #B23A35}
+.checks{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;color:var(--muted);margin:6px 0 4px}
+details.ref{margin-top:8px;border:1.5px solid var(--line);border-radius:8px;padding:8px 12px;background:var(--panel2)}
+details.ref summary{cursor:pointer;font-weight:500}
+.ending .grade{margin-top:10px;padding-top:8px;border-top:1px dashed #b8b8c8}
+.h3{font-family:var(--serif);font-size:21px;margin:22px 0 4px}
+.fine{font-size:12.5px;color:var(--muted);margin-top:22px;border-top:1px solid var(--line);padding-top:10px;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between}
+.travel{position:fixed;inset:0;z-index:40;background:#0b0f19;display:flex;flex-direction:column}
+.travel[hidden]{display:none}
+.travel canvas{flex:1;width:100%;height:100%;display:block}
+.tcap{position:absolute;left:0;right:0;bottom:calc(28px + env(safe-area-inset-bottom,0px));text-align:center;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.6);pointer-events:none}
+.tcap .r{font-family:var(--serif);font-weight:700;font-size:clamp(24px,4vw,40px)}
+.tcap .d{font-size:16px;opacity:.9}
+.tskip{position:absolute;top:calc(16px + env(safe-area-inset-top,0px));right:16px;padding:8px 14px;border-radius:999px;border:1.5px solid rgba(255,255,255,.7);background:rgba(0,0,0,.35);color:#fff;font-size:14px}
+.travel .fade{position:absolute;inset:0;background:#0b0f19;opacity:0;pointer-events:none;transition:opacity .45s}
+canvas.banner{display:block;width:calc(100% + 36px);height:150px;margin:-18px -18px 14px;border-radius:12px 12px 0 0}
+.crew{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:14px}
+.crew span{padding:2px 10px;border-radius:999px;border:1.5px solid var(--ink)}
+.crew span.me{background:var(--ink);color:var(--bg)}
+.grp{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.grp select,.grp input{padding:9px 11px;border:1.5px solid var(--line);border-radius:8px;background:var(--panel2);width:100%}
+.grp .full{grid-column:1/-1}
+.tt{width:100%;border-collapse:collapse;font-size:15px}
+.tt th,.tt td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left}
+.tt th{color:var(--muted);font-weight:500;font-size:13px}
+@media (prefers-reduced-motion:reduce){.map .x{}.map .node.reach circle.ring,.map .node.fresh{animation:none}}
+.rolechip{display:inline-block;padding:4px 12px;border-radius:999px;background:var(--tc);color:#fff;font-weight:700;font-size:14px}
+.days .dd{margin-left:8px;font-size:13.5px;padding:2px 8px;border-radius:999px;border:1.5px solid var(--ink)}
+.days .dd.late,.late{color:var(--accent);border-color:var(--accent);font-weight:700}
+.evn b{font-family:var(--serif);font-size:20px}
+.game.wide{grid-template-columns:1fr}
+.game.wide .mapbox{display:none}
+.draw{text-align:center;padding:18px 0 4px}
+.drum{display:inline-block;min-width:240px;padding:18px 26px;border-radius:14px;border:3px dashed var(--line);font-family:var(--serif);font-weight:700;font-size:28px;margin-bottom:12px;background:var(--panel2)}
+.drum.done{border-style:solid;border-color:var(--tc);color:var(--tc);animation:pop2 .5s ease-out}
+@keyframes pop2{0%{transform:scale(.85)}60%{transform:scale(1.08)}100%{transform:none}}
+.rolepick{display:grid;gap:6px;text-align:left;margin-top:10px}
+.mission{border-left:6px solid var(--tc);background:var(--panel2);padding:12px 14px;border-radius:6px;margin:10px 0}
+.mission b{color:var(--tc);margin-right:6px}
+ul.rules2{margin:4px 0 8px;padding-left:20px}ul.rules2 li{margin:4px 0}
+em.own{font-style:normal;font-size:12px;background:var(--ok);color:var(--bg);padding:1px 7px;border-radius:999px;margin-left:6px}
+.act.home{border-color:var(--accent)}
+.btn.big{font-size:20px;padding:14px 30px;border-radius:12px}
+.who-in{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.wchip{font-size:13px;padding:3px 10px;border-radius:999px;border:1.5px dashed var(--tc);color:var(--muted)}
+.wchip.in{border-style:solid;background:var(--tc);color:#fff}
+.smsg.ai.final{border:2px solid #B23A35}
+.evchip.none{opacity:.6;font-style:italic}
+#pmsg{color:var(--accent);font-weight:700}
+.dz{color:var(--accent);font-weight:700}
+.riskopts{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+img.banner{display:block;width:calc(100% + 36px);height:170px;object-fit:cover;margin:-18px -18px 14px;border-radius:12px 12px 0 0}
+.paperwrap,.summit,.tsum{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(280px,1fr);gap:16px;align-items:start}
+@media (max-width:900px){.paperwrap,.summit,.tsum{grid-template-columns:1fr}}
+.clue em{font-style:normal;font-weight:700;margin-right:4px}
+.shead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px}
+.phase{padding:4px 12px;border-radius:999px;background:var(--ink);color:var(--bg);font-size:14px;font-weight:500}
+.slog{display:flex;flex-direction:column;gap:10px;max-height:52vh;min-height:260px;overflow-y:auto;margin:12px 0;padding:4px}
+.slog.big{max-height:70vh;min-height:420px}
+.smsg{padding:10px 14px;border-radius:10px;background:var(--panel2);border-left:5px solid var(--tc,#888);max-width:92%}
+.smsg .who{display:block;font-size:13px;font-weight:700;color:var(--tc,var(--muted));margin-bottom:2px}
+.smsg.mine{align-self:flex-end}
+.smsg.ai{--tc:var(--ink);background:var(--paper);color:var(--paper-ink);font-family:var(--serif);white-space:pre-wrap;max-width:100%}
+.smsg.ai .who{color:#B23A35;font-family:var(--sans)}
+.smsg.sys{align-self:center;background:transparent;border:0;color:var(--muted);font-size:14px}
+.evs{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.evchip{font-size:12.5px;padding:2px 8px;border-radius:6px;background:var(--bg);border:1px solid var(--line)}
+.compose textarea{width:100%;min-height:80px;padding:10px 12px;border:1.5px solid var(--line);border-radius:8px;background:var(--bg);resize:vertical}
+.evpicks{display:flex;flex-wrap:wrap;gap:6px;max-height:150px;overflow-y:auto}
+.evpick{font-size:13px;padding:5px 10px;border-radius:999px;border:1.5px solid var(--line);background:transparent;text-align:left}
+.evpick[aria-pressed="true"]{background:var(--ok);border-color:var(--ok);color:var(--bg)}
+#teacher{margin-top:16px}
+.tbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:14px}
+.tbar select{padding:7px 10px;border:1.5px solid var(--line);border-radius:8px;background:var(--panel2)}
+.ttabs{display:flex;border:1.5px solid var(--ink);border-radius:8px;overflow:hidden;flex-wrap:wrap}
+.ttabs button{border:0;background:transparent;padding:8px 14px}
+.ttabs button+button{border-left:1.5px solid var(--ink)}
+.ttabs button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.lotgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-top:12px}
+.lotcell{border:3px solid var(--tc);border-radius:12px;padding:16px;text-align:center;background:var(--panel2)}
+.lotcell span{display:block;color:var(--muted);font-size:14px}
+.lotcell b{font-family:var(--serif);font-size:22px;color:var(--tc)}
+.phbtns{display:flex;flex-wrap:wrap;gap:6px}
+.phbtns .btn.on{background:var(--ink);color:var(--bg)}
+.tteam{border-left:5px solid var(--tc);padding:6px 10px;margin:6px 0;background:var(--panel2);border-radius:6px;font-size:14.5px}
+.tteam b{color:var(--tc)}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:12px}
+.mcell{border:1.5px solid var(--line);border-radius:10px;padding:10px;background:var(--panel2);display:flex;flex-direction:column;gap:6px}
+.mcell img,.mcell video,.mempty{width:100%;height:120px;object-fit:cover;border-radius:6px;background:var(--bg)}
+.mempty{display:grid;place-items:center;color:var(--muted);font-size:14px}
+.mcell input[type=text]{padding:6px 8px;border:1.5px solid var(--line);border-radius:6px;background:var(--bg);font-size:13.5px}
+.filebtn{display:inline-block;text-align:center;cursor:pointer}
+#tdoc{position:absolute;inset:0;overflow:hidden;background:#000}
+#tdoc img,#tdoc video{width:100%;height:100%;object-fit:cover;display:block}
+#tdoc .credit{position:absolute;left:18px;top:calc(18px + env(safe-area-inset-top,0px));color:#fff;font-size:13px;background:rgba(0,0,0,.45);padding:4px 10px;border-radius:4px}
+@keyframes kb{from{transform:scale(1.04) translate(0,0)}to{transform:scale(1.18) translate(-2.5%,-2%)}}
+@media (prefers-reduced-motion:reduce){#tdoc img{animation:none!important}.drum.done{animation:none}}
+#intro{position:fixed;inset:0;z-index:60;background:#05070d;color:#E8ECF4;overflow:hidden;font-family:var(--sans)}
+#intro .sc{position:absolute;inset:0;opacity:0;transition:opacity .8s;display:flex;align-items:center;justify-content:center}
+#intro .sc{pointer-events:none}
+#intro .sc.on{opacity:1;pointer-events:auto}
+#intro .cap{position:absolute;left:50%;bottom:calc(9% + env(safe-area-inset-bottom,0px));transform:translateX(-50%);width:min(900px,90vw);text-align:center;font-family:var(--serif);font-size:clamp(18px,2.6vw,28px);line-height:1.6;text-shadow:0 2px 14px #000;min-height:2em;z-index:5}
+#intro .iskip{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:14px;z-index:9;padding:7px 14px;border-radius:999px;border:1.5px solid rgba(255,255,255,.6);background:rgba(0,0,0,.4);color:#fff;font-size:14px}
+#intro .imute{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));left:14px;z-index:9;padding:7px 12px;border-radius:999px;border:1.5px solid rgba(255,255,255,.4);background:rgba(0,0,0,.4);color:#fff;font-size:14px}
+#intro .bars:before,#intro .bars:after{content:"";position:absolute;left:0;right:0;height:7vh;background:#000;z-index:4}
+#intro .bars:before{top:0}#intro .bars:after{bottom:0}
+.i-title{flex-direction:column;gap:18px;text-align:center}
+.i-title .stamp2{border:3px solid #E06A62;color:#E06A62;font-weight:700;letter-spacing:.3em;padding:4px 16px;transform:rotate(-6deg);font-size:15px}
+.i-title h2{font-family:var(--serif);font-size:clamp(30px,5vw,54px);margin:0}
+.i-title button{font-size:18px;padding:14px 28px;border-radius:10px;border:2px solid #F2B544;background:transparent;color:#F2B544;cursor:pointer}
+.i-title button:hover{background:#F2B544;color:#05070d}
+.i-room{background:radial-gradient(ellipse at 50% 70%,#0f2236 0%,#05070d 70%)}
+.i-room .mons{position:absolute;top:27%;left:50%;transform:translateX(-50%);display:flex;gap:2vw}
+.i-room .mon{width:min(22vw,230px);height:min(14vw,150px);background:#061a24;border:3px solid #1b2a3a;border-radius:6px;box-shadow:0 0 40px rgba(60,220,255,.25);overflow:hidden;position:relative;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:clamp(7px,.9vw,11px);color:#5FE3FF;padding:6px;line-height:1.35;white-space:pre}
+.i-room .mon.red{color:#FF6B6B;box-shadow:0 0 50px rgba(255,80,80,.45);border-color:#4a1b1b}
+.i-room svg.fig{position:absolute;bottom:0;left:50%;transform:translateX(-50%);height:52vh;filter:drop-shadow(0 0 30px rgba(60,220,255,.25))}
+.i-room .eye{animation:blink 3.2s infinite}
+@keyframes blink{0%,92%,100%{opacity:1}95%{opacity:.1}}
+.i-room .glow{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(95,227,255,.18),transparent 60%);animation:flick 2.4s infinite}
+@keyframes flick{0%,100%{opacity:.8}47%{opacity:1}50%{opacity:.4}53%{opacity:1}}
+.i-iot{position:absolute;top:9%;left:0;right:0;display:flex;justify-content:center;gap:3vw;z-index:3}
+.i-iot div{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:13px;color:#9fb0c8;opacity:0;transform:translateY(-10px);transition:all .5s}
+.i-iot div.on{opacity:1;transform:none}
+.i-iot div b{font-size:clamp(26px,3.4vw,40px);filter:grayscale(.2)}
+.i-iot div.hit{color:#FF6B6B}
+.i-iot div.hit b{filter:drop-shadow(0 0 12px #ff3b3b)}
+.i-docs{gap:1.6vw;flex-wrap:wrap;padding:0 4vw;background:#0a0d16}
+.i-doc{width:min(16vw,190px);min-width:120px;background:#ECEFF5;color:#141A2B;border-radius:3px;padding:12px 12px 14px;box-shadow:0 10px 30px rgba(0,0,0,.5);transform:translateY(20px);opacity:0;transition:all .6s}
+.i-doc.on{transform:none;opacity:1}
+.i-doc h5{margin:0 0 8px;font-size:13px;border-bottom:3px solid var(--tc);padding-bottom:4px}
+.i-doc i{display:block;height:7px;margin:6px 0;border-radius:2px;background:#9aa2b4;transition:background .25s}
+.i-doc i.x{background:#141A2B}
+.i-doc i.keep{background:#F2B544}
+.i-glitch{animation:glitch .5s steps(2) 2}
+@keyframes glitch{0%{transform:translate(0)}25%{transform:translate(-6px,2px);filter:hue-rotate(90deg)}50%{transform:translate(5px,-3px)}75%{transform:translate(-3px,1px);filter:invert(.2)}100%{transform:none}}
+.i-card{perspective:1200px}
+.i-card .card3{width:min(560px,86vw);min-height:300px;background:linear-gradient(135deg,#101826,#1d2a40);border:2px solid #5FE3FF;border-radius:14px;padding:28px 30px;box-shadow:0 0 60px rgba(95,227,255,.35);transform:rotateY(720deg) scale(.2);opacity:0;transition:transform 1.6s cubic-bezier(.2,.8,.2,1),opacity .6s;position:relative}
+.i-card .card3.on{transform:rotateY(0) scale(1) rotate(-3deg);opacity:1}
+.i-card .card3 .t{font-family:var(--serif);font-size:clamp(26px,3.6vw,38px);font-weight:700;color:#5FE3FF;letter-spacing:.2em;margin-bottom:12px}
+.i-card .card3 p{font-family:var(--serif);font-size:clamp(16px,2vw,20px);line-height:1.8;margin:0 0 10px;min-height:1.8em}
+.i-card .card3 .sig{text-align:right;color:#9fdcff}
+.i-card .card3 svg{position:absolute;right:22px;top:22px;width:60px;height:60px}
+.i-news{flex-direction:column;background:#0b0f19}
+.i-news .flash3{background:#C0392B;color:#fff;font-weight:700;font-size:clamp(26px,4vw,48px);padding:10px 30px;letter-spacing:.15em;animation:pulse3 1s infinite}
+@keyframes pulse3{50%{filter:brightness(1.35)}}
+.i-news .head{font-family:var(--serif);font-size:clamp(22px,3.2vw,38px);margin:22px 4vw;text-align:center}
+.i-news .ticker{position:absolute;bottom:calc(7vh + 4px);left:0;right:0;background:#F2B544;color:#141A2B;font-weight:700;white-space:nowrap;overflow:hidden;padding:8px 0;z-index:5}
+.i-news .ticker span{display:inline-block;padding-left:100%;animation:tick 16s linear infinite}
+@keyframes tick{to{transform:translateX(-100%)}}
+.i-letter{background:radial-gradient(ellipse at 50% 60%,#3a2c1a,#120d07 75%)}
+.i-letter .env{position:relative;width:min(560px,86vw);height:min(330px,52vw);transform:translateY(120vh) rotate(-8deg);transition:transform 1.4s cubic-bezier(.2,.9,.2,1)}
+.i-letter .env.on{transform:none}
+.i-letter .back{position:absolute;inset:0;background:#c9a46a;border-radius:6px;box-shadow:0 30px 60px rgba(0,0,0,.6)}
+.i-letter .paper{position:absolute;left:6%;right:6%;top:10%;bottom:6%;background:#FBF7EC;color:#1C2236;border-radius:3px;padding:20px 24px;transition:transform 1.2s ease .2s;font-family:var(--serif);font-size:clamp(14px,1.8vw,18px);line-height:1.75;overflow:hidden}
+.i-letter .env.open .paper{transform:translateY(-58%) scale(1.04);z-index:5;box-shadow:0 20px 40px rgba(0,0,0,.45)}
+.i-letter .front{position:absolute;inset:0;background:linear-gradient(160deg,#d8b67c,#c49a5c);clip-path:polygon(0 35%,50% 70%,100% 35%,100% 100%,0 100%);border-radius:0 0 6px 6px}
+.i-letter .flap{position:absolute;left:0;right:0;top:0;height:60%;background:#b88d52;clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;transition:transform .7s ease;z-index:2}
+.i-letter .env.open .flap{transform:rotateX(180deg);z-index:0;opacity:.85}
+.i-letter .seal{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);width:58px;height:58px;border-radius:50%;background:#B23A35;color:#fff;display:grid;place-items:center;font-family:var(--serif);font-weight:700;font-size:13px;z-index:3;box-shadow:0 4px 10px rgba(0,0,0,.4);transition:opacity .4s}
+.i-letter .env.open .seal{opacity:0}
+.i-letter .paper h4{margin:0 0 8px;font-size:1.3em;color:#B23A35;letter-spacing:.2em}
+.i-letter .accept{position:absolute;bottom:calc(9% + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);z-index:6;font-size:19px;padding:14px 30px;border-radius:10px;border:0;background:#F2B544;color:#141A2B;font-weight:700;opacity:0;transition:opacity .6s;cursor:pointer}
+.i-letter .accept.on{opacity:1}
+@media (prefers-reduced-motion:reduce){#intro *{animation:none!important;transition:none!important}}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1 class="case"><small>지리 탐정단 · 얄룽창포강 협상 회담</small>사라진 입장정리문</h1>
+    <div class="status" id="status"></div>
+  </header>
+  <div id="teacher" hidden></div>
+  <div class="game" id="gamewrap">
+    <div class="mapbox">
+      <div id="zoomslot"></div><svg class="map" id="map" viewBox="0 0 1000 930" role="img" aria-label="남아시아와 얄룽창포강·브라마푸트라강 유역 수사 지도"></svg>
+      <p class="mapnote">해안선, 강, 도시는 실제 경위도를 바탕으로 단순하게 그렸으며 국경선은 표시하지 않았습니다. 장소가 몰려 있으니 "수사 구역"이나 "현재 위치"로 확대해서 빛나는 장소를 누르세요.</p>
+    </div>
+    <div class="side" id="side"></div>
+  </div>
+  <div class="fine"><span>등장인물과 진술, 대표단 정리문은 실제 보도 기사(2025~2026)의 내용을 바탕으로 수업용으로 재구성한 가상 자료입니다. 특정 실존 인물이나 정부의 공식 입장이 아닙니다.</span><span style="display:flex;gap:6px"><button class="btn ghost small" data-act="regroup">반·모둠 바꾸기</button><button class="btn ghost small" id="reset">처음부터 다시</button></span></div>
+</div>
+<dialog id="dlg"><div class="dlg" id="dlgbody"></div></dialog>
+<div class="toast" id="toast" role="status"></div>
+<div class="travel" id="travel" hidden><canvas id="tcv"></canvas><div id="tdoc" hidden><img id="timg" alt="" hidden><video id="tvid" muted playsinline hidden></video><div class="credit" id="tcredit"></div></div><div class="tcap"><div class="r" id="tr"></div><div class="d" id="td"></div></div><button class="tskip" id="tskip">건너뛰기</button><div class="fade" id="tfade"></div></div>
+<script>
+const SUMMIT_DAY=15;
+const MAXDAY=Infinity;
+const NODES = {
+  village:{x:799,y:169,name:'협곡 마을',lb:[-16,6,'end'],full:'얄룽창포강 협곡 마을',country:'중국 · 티베트',npc:'B',
+    desc:'대협곡 위쪽, 강을 따라 자리 잡은 티베트인 마을이다. 마을 뒤 가파른 산비탈을 깎아 공사용 도로를 내는 소리가 들린다.',
+    obs:{t:'마을 뒤 산비탈 살펴보기',clue:'T1'}},
+  dam:{x:842,y:156,name:'메독 댐',lb:[-8,-16,'end'],full:'메독 댐 공사 현장',country:'중국 · 티베트',npc:'A',
+    desc:'강이 크게 굽이도는 대협곡. 거대한 공사 현장 안내판에 "계단식 발전소 5기"라고 적혀 있다.',
+    obs:{t:'협곡과 강 관찰하기',clue:'T2'}},
+  geo:{x:886,y:128,name:'지질 캠프',lb:[16,6,'start'],full:'산 위 지질 조사 캠프',country:'중국 · 티베트',npc:'E',hidden:true,
+    desc:'공사 현장이 내려다보이는 능선의 작은 캠프. 지진계와 암석 표본이 놓여 있다.',obs:null},
+  border:{x:849,y:240,name:'국경 초소',lb:[16,6,'start'],full:'아루나찰프라데시 국경 초소',country:'인도 · 국경 분쟁 지역',npc:'C',
+    desc:'협곡을 빠져나온 강이 인도로 들어서는 곳. 초소에는 긴장감이 감돈다.',
+    obs:{t:'국경 지역 둘러보기',clue:'T3'}},
+  assam:{x:649,y:333,name:'아삼 강변',lb:[0,30,'middle'],full:'아삼 브라마푸트라 강변',country:'인도',npc:null,
+    desc:'강폭이 넓어진 평야. 강둑 곳곳에 수위를 표시한 기둥이 서 있다.',
+    obs:{t:'강둑의 수위 기둥 조사하기',clue:'T4'}},
+  bangla:{x:538,y:412,name:'방글라데시 들판',lb:[-16,6,'end'],full:'방글라데시 강변 들판',country:'방글라데시',npc:'D',
+    desc:'끝없이 펼쳐진 평야에 논이 이어진다. 강에서 끌어온 물길이 들판을 가른다.',
+    obs:{t:'들판과 물길 살펴보기',clue:'T5'}},
+  bay:{x:591,y:519,name:'벵골만 하구',lb:[16,6,'start'],full:'벵골만 하구',country:'방글라데시 · 바다',npc:null,
+    desc:'강의 마지막 지점. 흙탕물이 바다로 퍼져 나간다.',
+    obs:{t:'강의 끝 확인하기',clue:'T6'}}
+};
+const EDGES = [['village','dam',1,'rain'],['dam','geo',1,'rock'],['dam','border',2,'check'],['border','assam',1,null],['assam','bangla',1,'flood'],['bangla','bay',1,null]];
+const EVENTS = {
+  rain:{ic:'🌧️',t:'협곡에 폭우',txt:'갑자기 장대비가 쏟아진다. 이 협곡은 중국에서 비가 가장 많이 내리는 지역 중 하나다. 비탈에서 흙이 흘러내리기 시작했다.',wait:'비가 그칠 때까지 기다린다'},
+  rock:{ic:'🪨',t:'낙석 주의',txt:'공사로 깎인 사면에서 돌이 굴러 내린다. 이 일대는 지각판의 경계에 놓여 있다.',wait:'안전하게 돌아서 간다'},
+  check:{ic:'🛂',t:'국경 검문',txt:'이곳은 중국과 인도가 서로 자기 땅이라고 주장하는 분쟁 지역이다. 검문이 몹시 까다롭다.',wait:'서류를 갖춰 정식으로 통과한다'},
+  flood:{ic:'🌊',t:'불어난 강물',txt:'강물이 불어 나룻배 운항이 멈췄다. 이 강의 수위는 계절에 따라 크게 달라진다.',wait:'물이 빠질 때까지 기다린다'}
+};
+
+const NPC = {
+  A:{name:'중국 에너지 당국자',short:'에너지 당국자',side:'up',
+    hello:'사업 홍보 자료를 든 당국자가 바쁘게 현장을 지휘하고 있다.',
+    tone:'자신감 있고 공식적인 말투. 국가 정책을 설명하는 담당자처럼 말한다.',
+    facts:'메독(모퉈) 수력발전 사업은 얄룽창포강 하류 대협곡에 계단식 발전소 5개를 지어 약 2,000m 낙차로 전기를 만든다. 2025년 7월 착공했다. 연간 발전량은 약 3,000억 kWh로 싼샤댐(882억 kWh)의 3배가 넘고, 설비 용량은 약 60GW다. 비용은 1조 위안 이상(약 1,700억 달러)으로 추산된다. 2020년 중국 전력의 49%를 석탄 화력이 만들었고, 중국은 2060년 탄소중립을 약속했다. 상하이, 동북 3성, 광둥·저장·장쑤 등 공장 지대가 전력난을 겪었다. 정부 설명으로는 연간 3억 명이 쓸 전기를 만들고 티베트에 해마다 200억 위안의 수입이 생긴다. 정부는 전력 생산용 댐이라 위험성이 거의 없다고 하며, 국가에너지국은 전 과정 안전관리를 강화하겠다고 약속했다. 관영 언론은 기존 짱무 발전소의 물고기 통로 덕분에 어종 다양성이 줄지 않았다고 소개했다. 중국은 하류 나라와의 관계를 고려해 10년 넘게 미뤄 왔지만 탄소중립 때문에 더 늦출 수 없다는 입장이다.',
+    qs:[
+      {q:'이 댐을 왜 지금 지어야 하죠?',a:'하류 나라들과의 관계를 생각해 10년 넘게 미뤄 왔습니다. 하지만 2020년 기준 우리 전기의 49%를 석탄이 만들었어요. 2060년 탄소중립을 이루려면 더는 늦출 수 없습니다.',clue:'A1'},
+      {q:'이 댐으로 무엇이 좋아지나요?',a:'싼샤댐의 3배가 넘는 연간 약 3,000억 kWh를 만들어 약 3억 명이 쓸 수 있습니다. 동부 공장 지대의 전력난을 덜고, 티베트는 해마다 200억 위안의 수입을 얻게 됩니다.',clue:'A2'},
+      {q:'안전이나 환경 문제는 없나요?',a:'전력 생산용 댐이라 위험성은 거의 없습니다. 국가에너지국이 전 과정 안전관리를 강화하겠다고 약속했고, 기존 짱무 발전소는 물고기 통로 덕에 어종이 줄지 않았습니다. 저 위 능선에서 지질 조사팀이 보강 의견을 냈지만, 잘 관리하고 있어요.',clue:'A3',unlock:'geo'},
+      {q:'결국 물을 무기로 쓰려는 것 아닌가요?',a:'… 근거 없는 의심에는 답하지 않겠습니다. 다음 일정이 있어서요.',bias:true}
+    ]},
+  B:{name:'티베트 마을 주민',short:'티베트 주민',side:'up',
+    hello:'마을 어귀에서 한 주민이 공사장 쪽 산비탈을 말없이 바라보고 있다.',
+    tone:'조심스럽고 담담한 말투. 개발 자체보다 결정에서 소외되는 것을 서운해한다.',
+    facts:'댐 건설이 주민 공동체에 미치는 영향은 공개되지 않고 있다. 2024년 2월 쓰촨성 티베트인 거주 지역에서 강퉈댐 건설 반대 시위가 일어나 수백 명이 구금됐다고 전해진다. 유엔 특별보고관이 중국 정부에 보낸 서한에 따르면 강퉈댐 때문에 최소 4,287명이 이주해야 하고 사찰 6곳이 수몰될 것으로 예상됐다. 이 숫자는 메독 댐이 아니라 강퉈댐의 것이다. 발전소 공사에 따르는 도로·터널 건설과 폭파가 산사태로 이어질 수 있다는 걱정이 있다. 산 위 능선에 지질 조사 캠프가 있다. 정부는 티베트의 경제 발전과 수입을 약속한다.',
+    qs:[
+      {q:'댐 소식을 듣고 어떤 생각이 드셨어요?',a:'솔직히 불안합니다. 전기가 생기고 돈이 들어온다지만, 정작 우리 마을이 어떻게 되는지는 아무도 알려주지 않아요.',clue:'B1'},
+      {q:'비슷한 일이 전에도 있었나요?',a:'쓰촨의 강퉈댐 때는 최소 4,287명이 이주해야 하고 사찰 6곳이 물에 잠길 거라고 했어요. 반대 시위를 한 사람들이 붙잡혀 갔다는 이야기도 들었습니다.',clue:'B2'},
+      {q:'공사가 시작되면 무엇이 걱정되세요?',a:'산을 깎고 터널을 뚫으며 폭파를 하잖아요. 산사태가 날까 무섭습니다. 저 위 능선에 지질 조사하는 사람들이 와 있다던데, 그 사람들은 뭔가 알지도 모르죠.',clue:'B3',unlock:'geo'},
+      {q:'돈도 들어온다는데, 반대하는 건 좀 이기적인 거 아니에요?',a:'… 그렇게 생각하신다면 더 드릴 말씀이 없네요.',bias:true}
+    ]},
+  E:{name:'중국 지질학자',short:'지질학자',side:'up',
+    hello:'지진계 앞에서 기록을 정리하던 지질학자가 고개를 든다.',
+    tone:'차분하고 과학적인 말투. 정치적 판단은 피하고 지형과 안전을 말한다.',
+    facts:'공사 현장은 지진이 일어날 수 있는 지각판의 경계를 따라 있고, 활성단층이 있다. 중국 지질학자들은 보강을 요구했다. 중국 연구원들은 가파르고 좁은 협곡에서 대규모 굴착과 댐 건설을 하면 산사태가 잦아질 수 있다고 우려를 제기한 바 있다. 도로·터널 건설과 폭파가 빙하 붕괴와 산사태로 이어지고, 댐에 가둔 물이 피해를 키울 수 있다는 우려도 있다. 중국 국가에너지국은 안전관리 강화를 약속했다.',
+    qs:[
+      {q:'이곳 지형은 어떤 특징이 있나요?',a:'공사 현장은 지각판의 경계를 따라 놓여 있고, 주변에 활성단층이 있습니다. 지진이 일어날 수 있는 곳이에요.',clue:'E1'},
+      {q:'공사가 어떤 위험을 만들 수 있나요?',a:'가파르고 좁은 협곡을 대규모로 파면 산사태가 잦아질 수 있습니다. 도로와 터널 공사, 폭파가 산사태나 빙하 붕괴로 이어지고, 댐에 가둔 물이 피해를 키울 수도 있지요.',clue:'E2'},
+      {q:'그럼 댐에 반대하시는 건가요?',a:'짓지 말자는 게 아닙니다. 이대로는 위험하니 보강해야 한다는 겁니다. 재해는 국경을 가리지 않으니까요.',clue:'E3'},
+      {q:'중국 사람인데 정부 사업을 비판해도 괜찮아요?',a:'… 저는 과학자로서 지형 이야기를 하러 온 겁니다. 그런 질문엔 답하지 않겠습니다.',bias:true}
+    ]},
+  C:{name:'인도 정부 관계자',short:'인도 정부',side:'down',
+    hello:'초소 앞에서 인도 정부 관계자가 쌍안경으로 상류 쪽을 살피고 있다.',
+    tone:'단호하고 경계하는 말투. 자국의 댐 계획에 대해 물으면 방어적이지만 사실은 인정한다.',
+    facts:'이 강은 인도에서 브라마푸트라강이라 불리며, 중국과 국경 분쟁 지역인 아루나찰프라데시를 지난다. 인도는 메독 댐을 안보 위협인 워터 밤(물 폭탄)으로 규정했다. 중국이 물을 갑자기 방류하면 하류 수백만 명이 위험해지고, 물을 무기로 쓸 수 있다고 우려한다. 댐을 지으려면 남차바르와산을 지나는 20km 길이 터널을 최소 4개 뚫어야 해 강의 흐름이 바뀌고 물 부족, 홍수, 산사태 가능성이 커진다고 본다. 인도도 중국 국경 근처 시앙강에 댐 10여 개를 짓겠다고 맞섰고, 인공 빙하탑과 지하 저수지를 만들고, 국경지대 이주도 진행 중이다. 인도 학자는 이것이 중국보다 먼저 물을 확보해 권리를 주장하려는 전략이며 현지 주민이 고려되지 않는다고 비판했다.',
+    qs:[
+      {q:'메독 댐을 어떻게 보시나요?',a:'인도는 이 댐을 "워터 밤", 즉 물 폭탄으로 봅니다. 상류에서 물을 쥔 쪽이 하류의 운명을 쥐게 되니까요. 물이 무기가 될 수 있습니다.',clue:'C1'},
+      {q:'구체적으로 무엇이 위험하죠?',a:'갑자기 물을 내보내면 하류 수백만 명이 위험합니다. 남차바르와산에 20km 터널을 최소 4개 뚫는다니 강의 흐름이 바뀌어 물 부족과 홍수가 심해질 수 있어요. 게다가 이 강은 국경 분쟁 지역을 지납니다.',clue:'C2'},
+      {q:'인도는 어떻게 대비하고 있나요?',a:'우리도 국경 근처 시앙강에 댐을 10여 개 지을 계획입니다. 인공 빙하탑과 지하 저수지도 만들고 있지요. 물론 국경 주민을 충분히 고려하지 않는다는 비판이 있다는 건 압니다.',clue:'C3'},
+      {q:'그냥 중국이 싫어서 반대하는 것 아닌가요?',a:'… 국가 안보 문제를 감정 문제로 보신다면 대화를 이어 가기 어렵겠군요.',bias:true}
+    ]},
+  D:{name:'방글라데시 농민',short:'방글라데시 농민',side:'down',
+    hello:'논둑에 앉아 물길을 손보던 농민이 땀을 닦으며 일어선다.',
+    tone:'소박하고 걱정 섞인 말투. 숫자보다 생활 이야기로 답한다.',
+    facts:'방글라데시는 이 강의 최하류에 있다. 하류 주민은 농업용수와 식수를 이 강에 의존한다. 강의 흐름이 하류의 가뭄과 홍수, 계절별 정상 수위를 결정한다. 방글라데시는 생태계 파괴와 물의 무기화를 우려해 강하게 반발했다. 강물의 상당 부분은 히말라야 빙하와 눈이 녹은 물이다. 브라마푸트라강은 방글라데시를 지나 갠지스강과 만나 벵골만으로 흘러간다.',
+    qs:[
+      {q:'댐 소식 들으셨어요? 어떠세요?',a:'걱정이 큽니다. 우리는 강의 가장 끝에 살아서, 위에서 무슨 일이 생기든 그 결과를 마지막에 받아야 해요. 결정에 끼지도 못하고요.',clue:'D1'},
+      {q:'강이 바뀌면 생활이 어떻게 달라지나요?',a:'농사지을 물도, 마실 물도 이 강에서 와요. 강의 흐름이 언제 홍수가 나고 언제 가뭄이 드는지, 철마다 물이 얼마나 차는지를 정합니다. 흐름이 바뀌면 한 해 농사가 흔들려요.',clue:'D2'},
+      {q:'이 강물은 어디서 오는지 아세요?',a:'저 멀리 히말라야의 눈과 빙하가 녹은 물이라고 들었어요. 요즘 빙하가 줄고 있다던데… 국제 연구자들이 그걸 조사한다더군요. 그분들과 이야기해 보세요.',clue:'D3',unlock:'F'},
+      {q:'댐은 중국 땅에 짓는 건데 왜 신경 쓰세요?',a:'… 강은 국경을 몰라요. 그걸 모르시면 할 말이 없네요.',bias:true}
+    ]},
+  F:{name:'국제 물 전문가',short:'국제 전문가',side:'out',
+    hello:'화상 회의 화면이 켜지고, 히말라야 빙하를 연구하는 국제기구 전문가가 인사한다.',
+    tone:'중립적이고 설명하는 말투. 어느 한 나라 편을 들지 않는다.',
+    facts:'수력발전은 세계 최대의 재생에너지원이며, 태양광·풍력의 변동을 보완한다. 메독 댐은 규모와 지형 때문에 기술적 난도가 매우 높고 시간이 오래 걸릴 것으로 본다. 국제수력협회 쪽에서는 물 분쟁은 항상 일어날 것이며 대화로만 해결될 수 있고, 상류국과 하류국이 공정한 협의 구조를 갖추는 것이 중요하다고 말한다. 히말라야 빙하는 1990년부터 2020년까지 면적의 약 12%가 사라졌다. 2050년 전후 피크 워터(빙하 녹은 물의 유출량이 정점을 찍고 줄어드는 시점) 이후에는 하천 유량이 줄어 수력발전의 신뢰도가 떨어질 수 있다. 빙하·적설 데이터를 투명하게 공유하고 초국경 협력을 해야 한다. 국제적 협의와 투명한 영향 평가 요구가 커질 전망이다.',
+    qs:[
+      {q:'이 댐을 어떻게 평가하세요?',a:'수력은 세계 최대의 재생에너지원이고, 태양광·풍력의 빈틈을 메워 줍니다. 다만 이 사업은 지형 때문에 기술적으로 매우 어렵고, 무엇보다 국경을 넘는 강이라는 점이 다릅니다.',clue:'F1'},
+      {q:'빙하는 이 강에 어떤 영향을 주나요?',a:'히말라야 빙하는 1990년부터 2020년까지 면적의 약 12%가 사라졌습니다. 2050년 전후로 녹은 물의 양이 정점을 찍고 줄기 시작하면, 거대한 댐도 지금처럼 전기를 만들기 어려울 수 있어요.',clue:'F2'},
+      {q:'갈등을 풀 방법이 있을까요?',a:'물 분쟁은 늘 일어납니다. 대화로만 풀 수 있지요. 상류국과 하류국이 공정하게 협의하는 틀을 만들고, 빙하와 강물 자료를 투명하게 나누고, 영향 평가를 공개해야 합니다.',clue:'F3'},
+      {q:'결국 어느 나라가 잘못한 거예요?',a:'… 저는 판정하러 온 사람이 아닙니다. 그 질문으로는 사건을 풀 수 없을 거예요.',bias:true}
+    ]}
+};
+
+const CLUES = {
+  A1:{who:'A',k:'주장',t:'댐을 지금 지어야 한다. 근거: 2020년 전력의 49%가 석탄, 2060년 탄소중립 약속. 10년 넘게 미뤘지만 더 미룰 수 없다.'},
+  A2:{who:'A',k:'근거',t:'연간 약 3,000억 kWh(싼샤댐의 3배 이상), 약 3억 명 사용 가능. 동부 전력난 완화, 티베트 연 200억 위안 수입.'},
+  A3:{who:'A',k:'주장',t:'위험성은 거의 없다. 국가에너지국이 안전관리 강화 약속. 짱무 발전소 물고기 통로로 어종 유지.'},
+  B1:{who:'B',k:'주장',t:'불안하다. 마을에 미칠 영향을 아무도 알려주지 않는다.'},
+  B2:{who:'B',k:'근거',t:'강퉈댐 사례: 최소 4,287명 이주, 사찰 6곳 수몰 예상. 반대 시위로 수백 명 구금됐다고 전해짐.'},
+  B3:{who:'B',k:'근거',t:'산을 깎고 터널을 뚫고 폭파하면 산사태가 날까 두렵다.'},
+  E1:{who:'E',k:'근거',t:'공사 현장은 지각판 경계를 따라 있고 활성단층이 있다.'},
+  E2:{who:'E',k:'근거',t:'좁은 협곡 대규모 굴착은 산사태를 늘릴 수 있다. 공사와 폭파가 산사태·빙하 붕괴로, 가둔 물이 피해를 키울 수 있다.'},
+  E3:{who:'E',k:'주장',t:'댐 반대가 아니라 보강이 필요하다. 재해는 국경을 가리지 않는다.'},
+  C1:{who:'C',k:'주장',t:'메독 댐은 "워터 밤(물 폭탄)". 상류가 물을 무기로 쓸 수 있다.'},
+  C2:{who:'C',k:'근거',t:'갑작스러운 방류 시 하류 수백만 명 위험. 20km 터널 최소 4개로 강 흐름 변화, 물 부족·홍수 우려. 국경 분쟁 지역 통과.'},
+  C3:{who:'C',k:'근거',t:'인도도 시앙강에 댐 10여 개 계획, 인공 빙하탑·지하 저수지 건설. 국경 주민을 고려하지 않는다는 비판도 있다.'},
+  D1:{who:'D',k:'주장',t:'걱정된다. 강의 끝에서 결과를 받기만 하고 결정에는 참여하지 못한다.'},
+  D2:{who:'D',k:'근거',t:'농업용수와 식수를 강에 의존. 강의 흐름이 홍수·가뭄·계절 수위를 정한다.'},
+  D3:{who:'D',k:'근거',t:'강물은 히말라야 눈과 빙하가 녹은 물. 빙하가 줄고 있다는 이야기.'},
+  F1:{who:'F',k:'주장',t:'수력은 중요한 재생에너지지만 이 사업은 기술적으로 매우 어렵고, 국경을 넘는 강이라 문제가 다르다.'},
+  F2:{who:'F',k:'근거',t:'히말라야 빙하 1990~2020년 약 12% 감소. 2050년 전후 이후 강물이 줄면 수력발전도 불안해진다.'},
+  F3:{who:'F',k:'주장',t:'물 분쟁은 대화로만 풀 수 있다. 공정한 협의 틀, 자료 공유, 영향 평가 공개가 필요하다.'},
+  T1:{who:'T',k:'지형',t:'협곡 마을: 가파른 산비탈을 깎아 공사용 도로를 낸다. 도로·터널 공사와 폭파가 산사태로 이어질 수 있다는 우려가 있다.'},
+  T2:{who:'T',k:'지형',t:'대협곡: 약 50km 구간에서 약 2,000m 낙차, 깊이 5,000m가 넘는 세계 최대 협곡, 중국에서 비가 가장 많은 지역 중 하나. 수력발전 잠재력이 크다.'},
+  T3:{who:'T',k:'지형',t:'국경: 강은 중국·인도 국경 분쟁 지역인 아루나찰프라데시를 지나며, 인도에서는 브라마푸트라강이라 불린다.'},
+  T4:{who:'T',k:'지형',t:'아삼 평야: 이 강의 흐름이 하류의 가뭄과 홍수, 계절별 수위를 결정한다.'},
+  T5:{who:'T',k:'지형',t:'방글라데시 평야: 넓은 들판의 농사가 강물에 기댄다. 하류 주민은 농업용수와 식수를 강에 의존한다.'},
+  T6:{who:'T',k:'지형',t:'하구: 브라마푸트라강은 방글라데시에서 갠지스강과 만나 벵골만으로 나간다. 하나의 강이 중국·인도·방글라데시를 잇는다.'}
+};
+
+const PRESET_DUMMY=0;
+/* ---------- additions to shared data ---------- */
+NODES.kath={x:0,y:0,name:'카트만두 연구센터',full:'카트만두 국제 산악 연구센터',country:'네팔',npc:'F',lb:[0,-16,'middle'],
+  desc:'히말라야 여러 나라의 빙하와 물을 연구하는 국제 연구센터. 벽면 화면에 빙하 위성사진이 띄워져 있다.',obs:{t:'빙하 관측 자료실 살펴보기',clue:'T7'}};
+EDGES.push(['kath','village',1,'snow'],['kath','bangla',1,null]);EDGES.forEach(e=>{e[2]=1;});
+EVENTS.snow={ic:'❄️',t:'고갯길 눈보라',txt:'히말라야를 넘는 높은 고갯길에 눈보라가 몰아친다. 해발이 높은 곳은 날씨가 순식간에 바뀐다.',wait:'눈보라가 그칠 때까지 기다린다'};
+CLUES.T7={who:'T',k:'지형',t:'연구센터: 히말라야는 약 20억 인구에 물을 대는 "아시아의 수탑"이다. 1990~2020년 갠지스 유역 빙하의 21%, 브라마푸트라 16%, 인더스 6%가 사라졌다.'};
+const TEAMS={
+  china:{name:'중국 대표단',npc:'A',home:'dam',color:'#C0392B',goal:'메독 댐 건설을 계속 추진하되, 국제사회의 우려를 잠재울 근거를 모아라.',
+    paper:[{c:'A1',t:'우리 대표단은 석탄 의존을 줄이고 2060년 탄소중립을 이루기 위해 메독 수력발전 사업이 반드시 필요하다고 본다.'},{c:'T2',t:'얄룽창포강 대협곡은 약 50km 구간에서 약 2,000m가 떨어져 수력발전 잠재력이 매우 크다.'},{c:'A2',t:'이 사업은 연간 약 3,000억 kWh, 약 3억 명이 쓸 전기를 만들고 티베트에 해마다 200억 위안의 수입을 안긴다.'},{c:'F1',t:'국제 전문가들도 수력이 세계 최대의 재생에너지원이며 태양광·풍력의 변동을 보완한다고 평가한다.'},{c:'A3',t:'우리는 전 과정 안전관리를 강화하고, 물고기 통로 등으로 생태계를 보호하겠다.'}]},
+  india:{name:'인도 대표단',npc:'C',home:'border',color:'#D35400',goal:'하류 국가의 안보와 물 문제를 내세워 댐 계획에 제동을 걸 근거를 모아라.',
+    paper:[{c:'C1',t:'우리 대표단은 메독 댐을 하류의 안보를 위협하는 "물 폭탄"으로 본다.'},{c:'T3',t:'이 강은 중국과 인도의 국경 분쟁 지역인 아루나찰프라데시를 지나 인도의 브라마푸트라강이 된다.'},{c:'C2',t:'상류에서 물을 갑자기 내보내거나 막으면 하류 수백만 명이 홍수와 물 부족 위험에 놓인다.'},{c:'E1',t:'중국 지질학자들조차 공사 현장이 판의 경계와 활성단층 위에 있다고 경고했다.'},{c:'E2',t:'좁은 협곡의 대규모 굴착은 산사태를 늘리고, 댐에 가둔 물은 재해를 키울 수 있다.'}]},
+  bangla:{name:'방글라데시 대표단',npc:'D',home:'bangla',color:'#1E8449',goal:'강의 최하류에서 결정에 참여할 권리와 물 안전을 요구할 근거를 모아라.',
+    paper:[{c:'D1',t:'우리 대표단은 강의 최하류에 살면서도 결정에서 배제된 방글라데시 사람들의 목소리를 대변한다.'},{c:'D2',t:'방글라데시 주민은 농업용수와 식수를 이 강에 의존한다.'},{c:'T4',t:'이 강의 흐름이 하류의 가뭄과 홍수, 계절별 수위를 결정한다.'},{c:'T6',t:'브라마푸트라강은 방글라데시에서 갠지스강과 만나 벵골만으로 흐른다. 하나의 강이 세 나라를 잇는다.'},{c:'F3',t:'국제 전문가들도 상류국과 하류국이 공정하게 협의하는 틀이 필요하다고 말한다.'}]},
+  tibet:{name:'티베트 주민 대표단',npc:'B',home:'village',color:'#7D3C98',goal:'댐이 들어서는 땅에 사는 주민의 삶터와 안전을 지킬 근거를 모아라.',
+    paper:[{c:'B1',t:'우리 대표단은 댐이 들어서는 땅에 사는 티베트 주민의 목소리를 전한다.'},{c:'B2',t:'인근 강퉈댐 사례에서는 최소 4,287명이 이주하고 사찰 6곳이 수몰될 것으로 예상되었다.'},{c:'T1',t:'가파른 산비탈을 깎아 도로와 터널을 내고 폭파하면 산사태가 일어날 수 있다.'},{c:'B3',t:'주민들은 공사로 인한 산사태와 삶터 파괴를 두려워한다.'},{c:'E3',t:'지질학자들도 지금 상태로는 위험하며 보강이 필요하다고 말한다.'}]},
+  intl:{name:'국제 전문가단',npc:'F',home:'kath',color:'#1F6FA8',goal:'어느 한쪽 편이 아니라, 모두가 받아들일 협의의 틀을 제안할 근거를 모아라.',
+    paper:[{c:'F1',t:'우리 전문가단은 수력이 중요한 재생에너지라는 점을 인정하지만, 국경을 넘는 강이라는 점에 주목한다.'},{c:'T7',t:'히말라야는 약 20억 인구에 물을 대는 "아시아의 수탑"이지만, 1990~2020년 브라마푸트라 유역 빙하의 16%가 사라졌다.'},{c:'F2',t:'2050년 전후 빙하 녹은 물이 줄기 시작하면 거대한 댐의 발전 능력도 불안해진다.'},{c:'E1',t:'공사 현장은 판의 경계와 활성단층 위에 있어 재해 위험을 함께 평가해야 한다.'},{c:'F3',t:'물 분쟁은 대화로만 풀 수 있다. 공정한 협의 틀, 자료 공유, 영향 평가 공개가 필요하다.'}]}
+};
+const ROLE_KEYS=['china','india','bangla','tibet','intl'];
+
+/* ---------- state ---------- */
+const KEY='geo-summit-v1';
+function fresh(){return {v:0,cls:null,grp:null,team:'',role:null,mode:'lobby',started:false,day:0,loc:null,visited:{},unlocked:{geo:false,F:true},fresh:null,asked:{},talk:null,clues:[],bias:0,obs:{},events:{},free:{},lastMove:null,returned:false,returnDay:null,paper:{claim:'',demand:'',rebut:'',submitted:false},localSummit:[],joinedSummit:false};}
+let S=(()=>{try{const v=JSON.parse(localStorage.getItem(KEY)||'null');if(v&&v.mode)return Object.assign(fresh(),v);}catch(e){}return fresh();})();
+let saveT;function save(){clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}},200);pushGroup();}
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const left=()=>Infinity;
+function met(){const m=new Set();S.clues.forEach(c=>{const w=CLUES[c]&&CLUES[c].who;if(w&&w!=='T')m.add(w);});return m;}
+function paperPct(st){st=st||S;if(!st.role)return 0;const p=TEAMS[st.role].paper;return Math.round(p.filter(x=>(st.clues||[]).includes(x.c)).length/p.length*100);}
+function isLate(st){st=st||S;return !st.returned||st.returnDay>SUMMIT_DAY;}
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('on'),2600);}
+function addClue(id){if(!S.clues.includes(id)){S.clues.push(id);return true;}return false;}
+function edgesFrom(n){return EDGES.filter(e=>e[0]===n||e[1]===n).map(e=>({to:e[0]===n?e[1]:e[0],cost:e[2],ev:e[3]})).filter(e=>!NODES[e.to].hidden||S.unlocked[e.to]);}
+let MEDIA={};
+const LL=(lon,lat)=>[+((lon-66)*29.4).toFixed(1),+((36-lat)*31).toFixed(1)];
+(function(){const GEO={village:[94.4,29.55],dam:[95.2,29.75],geo:[95.95,30.25],border:[95.3,28.1],assam:[91.7,26.2],bangla:[89.7,24.6],bay:[90.65,22.3]};for(const k in GEO){const q=LL(GEO[k][0],GEO[k][1]);NODES[k].x=q[0];NODES[k].y=q[1];}})();
+const VIEWS={full:[0,0,1000,930],region:[560,105,410,381]};
+let mapZoom='full',curVB=VIEWS.full.slice(),vbAnim=null;
+function targetVB(){if(mapZoom==='near'&&S.loc){const n=NODES[S.loc],w=210,h=195;return [n.x-w/2,n.y-h/2,w,h];}return VIEWS[mapZoom==='near'?'region':mapZoom].slice();}
+function applyVB(vb){const svg=$('#map');if(!svg)return;svg.setAttribute('viewBox',vb.map(v=>v.toFixed(1)).join(' '));const k=vb[2]/1000;svg.classList.toggle('far',vb[2]>700);svg.querySelectorAll('[data-sx]').forEach(el=>el.setAttribute('transform',`translate(${el.dataset.sx} ${el.dataset.sy}) scale(${k})`));}
+function setZoom(z){mapZoom=z;const from=curVB.slice(),to=targetVB();cancelAnimationFrame(vbAnim);const t0=performance.now(),D=matchMedia('(prefers-reduced-motion: reduce)').matches?1:800;
+  document.querySelectorAll('[data-zoom]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.zoom===z));
+  const step=now=>{const u=Math.min(1,(now-t0)/D),e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;curVB=from.map((v,i)=>v+(to[i]-v)*e);applyVB(curVB);if(u<1)vbAnim=requestAnimationFrame(step);};vbAnim=requestAnimationFrame(step);}
+const RIVER=[[82.1,30.3],[83.5,29.8],[85,29.4],[86.5,29.3],[88,29.25],[89.5,29.3],[91,29.25],[92.5,29.2],[93.5,29.35],[94.4,29.55],[95,29.8],[95.4,29.95],[95.55,29.6],[95.3,29.2],[95.2,28.6],[95.3,28],[95,27.6],[94.2,27.1],[93,26.7],[91.7,26.2],[90.5,26.1],[89.8,25.8],[89.7,24.8],[89.75,23.8],[90.3,23.2],[90.6,22.6],[90.7,22.2]];
+const GANGES=[[79,31],[78.2,29.9],[79.4,28],[80.3,26.5],[81.8,25.4],[83,25.3],[85.1,25.6],[87.3,25.3],[88.1,24.8],[89,24.1],[89.75,23.8]];
+const INDUS=[[81.3,31.1],[79.3,32.5],[77.6,34.1],[75.2,35.4],[73.5,35.2],[72.7,34],[71.6,32],[70.5,29],[69.2,26.6],[68.4,25.2],[67.6,24.1]];
+const CREST=[[70.5,36.2],[73.5,35.6],[75.5,34.4],[77.5,32.9],[79.6,30.9],[81.5,29.6],[83,28.85],[85,28.35],[86.9,27.95],[88.5,27.8],[90,27.75],[92,27.8],[93.5,28.2],[94.8,28.9],[97,28.4],[100,27.6]];
+const COAST=[[66,25.3],[67,24.8],[68.5,23.7],[69,22.6],[70.3,22.9],[69.2,22.2],[70.5,20.8],[72.2,21.2],[72.6,21.8],[72.8,20.4],[72.8,19],[73.3,17],[73.8,15.4],[74.4,14],[74.8,12.9],[75.5,11.5],[76.2,10],[76.6,9],[77.5,8.1],[78.1,8.8],[79,9.3],[79.8,10.3],[79.9,11.5],[80.3,13.1],[80.1,15],[80.5,15.8],[81.3,16.3],[82.3,16.6],[83.3,17.7],[84.9,19.3],[86.4,20],[86.9,20.8],[87.5,21.6],[88,21.7],[89,21.8],[90,22],[91,22.4],[91.8,22],[92.3,20.8],[92.9,20.1],[93.6,19.3],[94.3,18],[94.5,16.3],[95.2,15.8],[96.5,16.6],[97.6,16.5],[98.3,13.5],[98.6,10],[100,8]];
+const LANKA=[[79.9,9.8],[80.3,9.8],[81,8.6],[81.9,7.4],[81.7,6.4],[80.6,5.95],[80,6.8],[79.8,8]];
+const smooth=pts=>{const P=pts.map(p=>LL(p[0],p[1]));let d=`M${P[0][0]} ${P[0][1]}`;for(let i=1;i<P.length;i++){const a=P[i-1],b=P[i];d+=` Q${a[0]} ${a[1]} ${(a[0]+b[0])/2} ${(a[1]+b[1])/2}`;}const l=P[P.length-1];return d+` L${l[0]} ${l[1]}`;};
+const poly=pts=>pts.map((p,i)=>{const q=LL(p[0],p[1]);return (i?'L':'M')+q[0]+' '+q[1];}).join(' ');
+function lbl(lon,lat,t,cls,anchor,dx,dy){const q=LL(lon,lat);return `<g data-sx="${q[0]}" data-sy="${q[1]}"><text class="lbl ${cls||''}" x="${dx||0}" y="${dy||0}" text-anchor="${anchor||'middle'}">${t}</text></g>`;}
+function renderMap(){
+  const reach=new Map();
+  if(S.started&&S.loc&&S.mode==='loc'&&!S.solved)edgesFrom(S.loc).forEach(e=>reach.set(e.to,e.ev?'⚠ 0~2':1));
+  const crest=CREST.map(p=>LL(p[0],p[1]));const mtn=[];
+  for(let i=1;i<crest.length;i++){const a=crest[i-1],b=crest[i];const n=Math.max(1,Math.round(Math.hypot(b[0]-a[0],b[1]-a[1])/16));for(let k=0;k<n;k++){const x=a[0]+(b[0]-a[0])*k/n,y=a[1]+(b[1]-a[1])*k/n;mtn.push(`<path class="mtn" d="M${x-7} ${y+7} L${x} ${y-8} L${x+7} ${y+7} Z"/>`);}}
+  const plateau=`M-20 -20 H1020 V${crest[crest.length-1][1]-4} `+crest.slice().reverse().map(p=>`L${p[0]} ${p[1]-4}`).join(' ')+` L-20 ${crest[0][1]} Z`;
+  const coast=COAST.map(p=>LL(p[0],p[1]));const sea=`M-20 ${coast[0][1]} `+coast.map(c=>`L${c[0]} ${c[1]}`).join(' ')+` L1020 ${coast[coast.length-1][1]} L1020 950 L-20 950 Z`;
+  const rb=VIEWS.region;
+  const roads=EDGES.filter(e=>[e[0],e[1]].every(n=>!NODES[n].hidden||S.unlocked[n])).map(e=>{const a=NODES[e[0]],b=NODES[e[1]];const live=(S.loc===e[0]&&reach.has(e[1]))||(S.loc===e[1]&&reach.has(e[0]));return `<line class="road ${live?'live':''}" vector-effect="non-scaling-stroke" x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}"/>`;}).join('');
+  const nodes=Object.entries(NODES).filter(([k,n])=>!n.hidden||S.unlocked[k]).map(([k,n])=>{const r=reach.has(k),[dx,dy,an]=n.lb;
+    return `<g class="node ${S.visited[k]?'visited':''} ${r?'reach':''} ${S.loc===k?'here':''} ${S.fresh===k?'fresh':''}" data-node="${k}" data-sx="${n.x}" data-sy="${n.y}" ${r?`tabindex="0" role="button" aria-label="${n.full}(으)로 이동, ${reach.get(k)}일"`:''}>${r?'<circle class="ring" r="15"/>':''}<circle class="dot" r="9"/><text x="${dx}" y="${dy}" text-anchor="${an}">${n.name}</text>${r?`<text class="cost" x="${dx}" y="${dy+21}" text-anchor="${an}">${reach.get(k)}일</text>`:''}</g>`;}).join('');
+  const tk=S.loc?NODES[S.loc]:null;
+  $('#zoomslot').innerHTML=`<div class="zoombar"><button data-zoom="full" aria-pressed="${mapZoom==='full'}">남아시아 전체</button><button data-zoom="region" aria-pressed="${mapZoom==='region'}">수사 구역</button><button data-zoom="near" aria-pressed="${mapZoom==='near'}" ${S.loc?'':'disabled'}>현재 위치</button></div>`;
+  curVB=targetVB();
+  const cities=[[91.1,29.65,'라싸',0,-12,'middle'],[85.3,27.7,'카트만두',0,22,'middle'],[90.4,23.8,'다카',12,6,'start'],[77.2,28.6,'델리',0,22,'middle'],[88.4,22.6,'콜카타',-12,6,'end'],[72.8,19,'뭄바이',12,6,'start']].map(c=>{const q=LL(c[0],c[1]);return `<g data-sx="${q[0]}" data-sy="${q[1]}"><circle class="city" r="4"/><text class="lbl sm city" x="${c[3]}" y="${c[4]}" text-anchor="${c[5]}">${c[2]}</text></g>`;}).join('');
+  $('#map').innerHTML=`<rect class="land" x="-50" y="-50" width="1100" height="1050"/>
+  <path class="plateau" d="${plateau}"/>
+  <path class="sea" d="${sea}"/><path class="sea" d="${poly(LANKA)} Z" style="fill:var(--land)"/>
+  <ellipse class="zone" vector-effect="non-scaling-stroke" cx="${LL(94.6,28)[0]}" cy="${LL(94.6,28)[1]}" rx="56" ry="26"/>
+  ${mtn.join('')}
+  <path class="river" vector-effect="non-scaling-stroke" d="${smooth(RIVER)}"/>
+  <path class="river2" vector-effect="non-scaling-stroke" d="${smooth(GANGES)}"/>
+  <path class="river2" vector-effect="non-scaling-stroke" d="${smooth(INDUS)}"/>
+  <rect class="areabox" vector-effect="non-scaling-stroke" x="${rb[0]+6}" y="${rb[1]+6}" width="${rb[2]-12}" height="${rb[3]-12}" rx="8"/>
+  <g data-sx="${rb[0]+14}" data-sy="${rb[1]+30}"><text class="lbl area" text-anchor="start">수사 구역</text></g>
+  ${cities}
+  ${lbl(84,33.6,'중국 · 티베트 고원')}
+  ${lbl(77.4,31.4,'히말라야 산맥','sm')}
+  ${lbl(83.8,28.9,'네팔','sm')}
+  ${lbl(90.5,27.2,'부탄','sm')}
+  ${lbl(69.3,29.8,'파키스탄')}
+  ${lbl(71.4,26.6,'타르 사막','sm terr')}
+  ${lbl(78.6,23.2,'인도','big')}
+  ${lbl(77.4,17.6,'데칸고원','sm terr')}
+  ${lbl(92.2,24.4,'방글라데시','sm','start')}
+  ${lbl(96.6,21.6,'미얀마')}
+  ${lbl(82.2,7.4,'스리랑카','sm','start')}
+  ${lbl(68.6,16.2,'아라비아해','sea')}
+  ${lbl(87.6,15.6,'벵골만','sea')}
+  ${lbl(72.2,31.6,'인더스강','sm riv')}
+  ${lbl(82.4,24.6,'갠지스강','sm riv')}
+  ${lbl(87.4,30.2,'얄룽창포강','sm riv')}
+  ${lbl(93.6,25.9,'브라마푸트라강','sm riv inreg')}
+  ${lbl(94.4,26.6,'국경 분쟁 지역','sm zl inreg')}
+  ${roads}${nodes}
+  ${tk?`<g id="token" data-sx="${tk.x}" data-sy="${tk.y}"><circle r="6"/></g>`:''}`;
+  applyVB(curVB);
+}
+/* ---------- first-person travel scenes (pseudo-3D) ---------- */
+const BIOME={kath:'valley',village:'gorge',dam:'gorge',geo:'ridge',border:'forest',assam:'plain',bangla:'paddy',bay:'coast',office:'city'};
+const TOD={dawn:{sky:['#E9A27A','#FBE1C2'],sun:'#FFE2B0',sunY:.86,light:1.0,tint:'rgba(255,170,120,.10)'},
+  day:{sky:['#7FAEDB','#E3EEF4'],sun:'#FFF6D8',sunY:.25,light:1,tint:'rgba(0,0,0,0)'},
+  gold:{sky:['#86A9CC','#F6D9A8'],sun:'#FFE6A6',sunY:.62,light:1,tint:'rgba(255,190,90,.10)'},
+  dusk:{sky:['#3F4778','#EE9466'],sun:'#FFB27A',sunY:.9,light:.85,tint:'rgba(120,60,90,.14)'},
+  night:{sky:['#141B33','#3B3F66'],sun:'#E8ECF4',sunY:.18,light:.55,tint:'rgba(20,30,70,.25)'},
+  storm:{sky:['#59636F','#A9AFB4'],sun:null,sunY:.2,light:.8,tint:'rgba(40,50,60,.18)'}};
+const BIO={
+  gorge:{tod:'day',ground:['#6D604F','#665A4A'],road:['#A58F6C','#9C8765'],edge:'#D9CBB0',river:{x:1.7,hw:.9,c:['#2E6F8E','#2A6684']},walls:{x:3.6,h:7,c:['#6A5645','#5C4A3B'],strata:'#4C3D31'},far:['#8D9BB4','#A8B4C8'],snow:true,mid:'#7B6A58',fog:.18,
+    props:[['rock',.30,[-1.3,-1.0]],['flags',.08,[-1.5]],['rock',.18,[2.9]],['pine',.06,[-2.4]]]},
+  ridge:{tod:'dawn',ground:['#C9C2B8','#BDB6AC'],road:['#9F8C72','#958369'],edge:'#EFE9E0',walls:{x:4.2,h:4,c:['#857767','#766959'],strata:'#655A4D',snowcap:true},far:['#A5ADC0','#C7CCD8'],snow:true,mid:'#9C9282',fog:.28,
+    props:[['rock',.35,[-1.2,1.3]],['snowpole',.2,[-1.0,1.0]]]},
+  forest:{tod:'gold',ground:['#4F7A4F','#486F48'],road:['#A08A69','#968163'],edge:'#D8CDB4',river:{x:-1.9,hw:.85,c:['#336F8A','#2F6880']},hills:['#5D8664','#4C7354'],far:['#7A9A8E','#9DB4AA'],mid:'#56795E',
+    props:[['pine',.65,[1.3,1.9,2.6,-3.1]],['sign',.05,[1.1]],['rock',.1,[-1.2]]]},
+  plain:{tod:'gold',ground:['#8DA95E','#86A257'],road:['#C0A576','#B69C6F'],edge:'#E9DCC0',river:{x:2.4,hw:1.6,c:['#4D86A2','#477E99']},far:['#A9BA9A','#C5D0B8'],mid:'#93A774',fieldL:['#6E9A4C','#5E8A40'],
+    props:[['teabush',.9,[-1.3,-1.8,-2.3,-2.8]],['pole',.12,[-1.05]],['shade',.12,[-2.0]],['boat',.06,[2.6]]]},
+  paddy:{tod:'dawn',ground:['#7DAE60','#9CC7B0'],road:['#BB9E70','#B1956A'],edge:'#E6D8BC',river:{x:-2.6,hw:1.4,c:['#6497AE','#5B8FA6']},far:['#AFC39B','#CBD8BE'],mid:'#8BB07A',
+    props:[['palm',.35,[1.4,2.2,-4.4]],['hut',.12,[2.0]],['boat',.05,[-2.6]]]},
+  coast:{tod:'dusk',ground:['#C9B48D','#C0AB84'],road:['#9C8A6E','#938267'],edge:'#E8DCC3',river:{x:3.4,hw:2.6,c:['#4C7EA0','#467697'],sea:true},far:['#7F92AE','#A3B2C8'],mid:'#6F8A6A',
+    props:[['mangrove',.55,[-1.4,-2.1,-2.8]],['pole',.08,[1.05]]]},
+  valley:{tod:'day',ground:['#7E9A5E','#76925A'],road:['#B39C78','#AA9472'],edge:'#E6DAC2',far:['#9AA8C2','#C2CBDB'],snow:true,mid:'#6F8C5C',hills:['#6E8F62','#5E7F55'],
+    props:[['pine',.35,[1.4,2.2,-1.5,-2.4]],['flags',.05,[-1.3]],['shade',.15,[2.0]]]},
+  city:{tod:'night',ground:['#3F404B','#3A3B45'],road:['#55565F','#4F5059'],edge:'#8C8C96',far:['#2C3150','#3A3F5E'],mid:'#2A2D44',
+    props:[['bldg',.9,[-1.8,1.8]],['lamp',.25,[-1.1,1.1]]]}
+};
+const LANDMARK={kath:'research',village:'village',dam:'dam',geo:'camp',border:'checkpoint',assam:'ghat',bangla:'village2',bay:'lighthouse',office:'office'};
+function rng(seed){let a=seed>>>0;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function hashStr(s){let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return h>>>0;}
+const sceneCache={};
+function makeScene(from,to,w){
+  const key=`${from||'office'}>${to}>${w||''}`;if(sceneCache[key])return sceneCache[key];
+  const b=BIOME[to]||'plain',B=BIO[b],R=rng(hashStr(key));const len=150;
+  const curves=[];for(let i=0;i<4;i++)curves.push({a:(R()-.5)*0.0042,f:.02+R()*.05,p:R()*6});
+  const sprites=[];
+  B.props.forEach(([type,dens,xs])=>{for(let s=4;s<len-10;s+=1){if(R()<dens){const x=xs[Math.floor(R()*xs.length)]+(R()-.5)*.35;sprites.push({s:s+R(),x,type,v:R()});}}});
+  if(to==='village'||from==='village'){for(let s=30;s<len-10;s+=28)sprites.push({s,x:-1.6,type:'chorten',v:R()});}
+  const birds=Array.from({length:7},()=>({x:R(),y:.08+R()*.2,sp:.02+R()*.03,ph:R()*6}));
+  const clouds=Array.from({length:7},()=>({x:R(),y:.05+R()*.28,r:.06+R()*.1,sp:.004+R()*.008}));
+  const tod=(w==='rain'||w==='snow')?'storm':B.tod;
+  const sc={b,B,len,curves,sprites:sprites.sort((a,c)=>a.s-c.s),lm:LANDMARK[to]||null,birds,clouds,tod,w,seed:R()*100};
+  sceneCache[key]=sc;return sc;
+}
+function curvAt(sc,s){let k=0;sc.curves.forEach(c=>{k+=c.a*Math.sin(s*c.f+c.p);});return s>sc.len-25?k*Math.max(0,(sc.len-s)/25):k;}
+const mixC=(a,b,u)=>{const p=x=>[1,3,5].map(i=>parseInt(x.slice(i,i+2),16));const A=p(a),Bc=p(b);return `rgb(${A.map((v,i)=>Math.round(v+(Bc[i]-v)*u)).join(',')})`;};
+function drawTravel(ctx,w,h,sc,pos,o){
+  o=o||{};const B=sc.B,T=TOD[sc.tod],sp=o.sp||0,tm=o.time||0;
+  const hz=Math.round(h*0.44), VD=70, N=150;
+  ctx.save();ctx.clearRect(0,0,w,h);
+  const bob=Math.sin(pos*2.2)*2.5*Math.min(1,sp);ctx.translate(0,bob);
+  // sky
+  let g=ctx.createLinearGradient(0,0,0,hz);g.addColorStop(0,T.sky[0]);g.addColorStop(1,T.sky[1]);ctx.fillStyle=g;ctx.fillRect(-5,-10,w+10,hz+12);
+  if(sc.tod==='night'){ctx.fillStyle='rgba(255,255,255,.85)';const R=rng(7);for(let i=0;i<90;i++){const s=R()*1.6+.4;ctx.fillRect(R()*w,R()*hz*.8,s,s);}}
+  // road curvature accumulation (near -> far)
+  const ds=[],xs=[],ys=[];let x=0,dx=0;const camX=0;
+  for(let i=0;i<=N;i++){const d=1+(VD-1)*Math.pow(i/N,1.7);ds.push(d);const k=curvAt(sc,pos+d);dx+=k*(i?ds[i]-ds[i-1]:0)*6;x+=dx*(i?ds[i]-ds[i-1]:0);xs.push(x);ys.push(hz+(h-hz)*1/d);}
+  const farShift=xs[N]/VD;
+  const P=(i,lx)=>w/2+((xs[i]+lx)-camX)*(w*0.42)/ds[i];
+  // sun / moon
+  if(T.sun){const sx=w*(.72)-farShift*w*.12,sy=hz*T.sunY;const sg=ctx.createRadialGradient(sx,sy,2,sx,sy,h*.35);sg.addColorStop(0,T.sun);sg.addColorStop(.12,T.sun+'cc');sg.addColorStop(1,'rgba(255,255,255,0)');ctx.fillStyle=sg;ctx.fillRect(0,0,w,hz);ctx.fillStyle=T.sun;ctx.beginPath();ctx.arc(sx,sy,h*.028,0,7);ctx.fill();}
+  // clouds
+  sc.clouds.forEach(c=>{const cx=((c.x+tm*c.sp-farShift*.05)%1.2+1.2)%1.2*w-w*.1,cy=c.y*hz;ctx.fillStyle=sc.tod==='night'?'rgba(120,130,170,.25)':sc.tod==='storm'?'rgba(90,96,104,.55)':'rgba(255,255,255,.55)';for(let k=0;k<4;k++){ctx.beginPath();ctx.ellipse(cx+k*c.r*w*.35,cy+Math.sin(k*1.7)*6,c.r*w*.4,c.r*h*.12,0,0,7);ctx.fill();}});
+  // mountain layers
+  const ridge=(off,amp,base,col,seed,snow)=>{ctx.beginPath();ctx.moveTo(-10,hz+2);for(let X=-10;X<=w+10;X+=w/90){const u=(X/w)*6+seed-farShift*off;const y=base-amp*(.55+.28*Math.sin(u*1.7)+.18*Math.sin(u*4.3+1)+.08*Math.sin(u*11.1));ctx.lineTo(X,y);}ctx.lineTo(w+10,hz+2);ctx.closePath();ctx.fillStyle=col;ctx.fill();
+    if(snow){ctx.save();ctx.clip();ctx.fillStyle='rgba(255,255,255,.88)';ctx.fillRect(0,0,w,base-amp*.62);ctx.restore();}};
+  const big=B.walls?1:B.hills?.6:.3;
+  ridge(.4,h*.30*big,hz,B.far[1],sc.seed,B.snow);
+  ridge(.8,h*.2*big,hz,B.far[0],sc.seed+3,B.snow&&B.walls&&B.walls.snowcap);
+  if(B.hills){B.hills.forEach((c,j)=>ridge(1.4+j,h*(.07+j*.03),hz+2,c,sc.seed+7+j,false));}
+  else ridge(1.6,h*.05,hz+2,B.mid,sc.seed+9,false);
+  // city skyline
+  if(sc.b==='city'){const R=rng(3);for(let X=-10;X<w;){const bw=w*(.03+R()*.05),bh=h*(.04+R()*.16);ctx.fillStyle='#232740';ctx.fillRect(X,hz-bh,bw-3,bh);ctx.fillStyle='rgba(255,214,140,.8)';for(let yy=hz-bh+6;yy<hz-4;yy+=9)for(let xx=X+4;xx<X+bw-7;xx+=8)if(R()<.4)ctx.fillRect(xx,yy,3,4);X+=bw;}}
+  // ground strips far -> near
+  const seg=3;ctx.fillStyle=B.ground[0];ctx.fillRect(-5,hz,w+10,h-hz+10);
+  for(let i=N;i>0;i--){const y1=ys[i],y0=ys[i-1];if(y0<hz)continue;const par=Math.floor((pos+ds[i])/seg)%2;
+    ctx.fillStyle=B.ground[par];ctx.fillRect(-5,y1,w+10,y0-y1+1);
+    if(B.fieldL){ctx.fillStyle=B.fieldL[par];const a=P(i,-1.0),a0=P(i-1,-1.0);ctx.beginPath();ctx.moveTo(-5,y1);ctx.lineTo(a,y1);ctx.lineTo(a0,y0);ctx.lineTo(-5,y0);ctx.fill();}
+    if(B.river){const r=B.river,hw=r.hw*(sc.w==='flood'?1.5:1);const l1=P(i,r.x-hw),r1=P(i,r.x+hw),l0=P(i-1,r.x-hw),r0=P(i-1,r.x+hw);
+      ctx.fillStyle=sc.w==='flood'?(par?'#7D6A4C':'#86735A'):r.c[Math.floor((pos*1.6+ds[i])/seg)%2];
+      if(r.sea){ctx.beginPath();ctx.moveTo(l1,y1);ctx.lineTo(w+5,y1);ctx.lineTo(w+5,y0);ctx.lineTo(l0,y0);ctx.fill();}
+      else{ctx.beginPath();ctx.moveTo(l1,y1);ctx.lineTo(r1,y1);ctx.lineTo(r0,y0);ctx.lineTo(l0,y0);ctx.fill();}
+      if(i%9===0){ctx.strokeStyle='rgba(255,255,255,.35)';ctx.lineWidth=Math.max(1,3/ds[i]*4);const mx=(l1+(r.sea?w:r1))/2+Math.sin(i+pos)*((r.sea?w:r1)-l1)*.2;ctx.beginPath();ctx.moveTo(mx,y1);ctx.lineTo(mx+((r.sea?w:r1)-l1)*.12,y1);ctx.stroke();}}
+    const rl1=P(i,-.62),rr1=P(i,.62),rl0=P(i-1,-.62),rr0=P(i-1,.62);
+    ctx.fillStyle=B.road[par];ctx.beginPath();ctx.moveTo(rl1,y1);ctx.lineTo(rr1,y1);ctx.lineTo(rr0,y0);ctx.lineTo(rl0,y0);ctx.fill();
+    if(par){ctx.fillStyle=B.edge;const ew=(rr1-rl1)*.04;ctx.fillRect(rl1,y1,ew,y0-y1+1);ctx.fillRect(rr1-ew,y1,ew,y0-y1+1);}
+    if(Math.floor((pos+ds[i])/(seg*1.5))%2&&sc.b==='city'){ctx.fillStyle='rgba(240,220,150,.8)';const c1=(rl1+rr1)/2,cw=(rr1-rl1)*.025;ctx.fillRect(c1-cw,y1,cw*2,y0-y1+1);}
+    if(B.walls){const W=B.walls;[-1,1].forEach(sd=>{const bx1=P(i,sd*W.x),bx0=P(i-1,sd*W.x);const top1=y1-W.h*(h-hz)/ds[i]*.9,top0=y0-W.h*(h-hz)/ds[i-1]*.9;
+      ctx.fillStyle=W.c[par];const ex=sd<0?-5:w+5;ctx.beginPath();ctx.moveTo(bx1,y1);ctx.lineTo(bx1,top1);ctx.lineTo(ex,top1-(h*.4));ctx.lineTo(ex,y0);ctx.lineTo(bx0,y0);ctx.closePath();ctx.fill();
+      if(i%4===0){ctx.strokeStyle=W.strata;ctx.globalAlpha=.35;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(bx1,top1+(y1-top1)*.3);ctx.lineTo(ex,top1+(y1-top1)*.3-h*.12);ctx.stroke();ctx.globalAlpha=1;}
+      if(W.snowcap&&i%3===0){ctx.fillStyle='rgba(250,252,255,.55)';ctx.beginPath();ctx.moveTo(bx1,top1);ctx.lineTo(ex,top1-h*.4);ctx.lineTo(ex,top1-h*.385);ctx.lineTo(bx1,top1+(y1-top1)*.06);ctx.fill();}});}
+  }
+  // fog near horizon
+  if(B.fog){const fg=ctx.createLinearGradient(0,hz-h*.12,0,hz+h*.1);fg.addColorStop(0,'rgba(255,255,255,0)');fg.addColorStop(.5,`rgba(235,238,242,${B.fog})`);fg.addColorStop(1,'rgba(255,255,255,0)');ctx.fillStyle=fg;ctx.fillRect(0,hz-h*.12,w,h*.22);}
+  // sprites far -> near
+  const idxForD=d=>{let lo=0,hi=N;while(hi-lo>1){const m=(lo+hi)>>1;if(ds[m]<d)lo=m;else hi=m;}return lo;};
+  const vis=[];sc.sprites.forEach(sp_=>{const d=sp_.s-pos;if(d>1.05&&d<VD)vis.push([d,sp_]);});
+  if(sc.lm){const d=sc.len-pos;if(d>1.05&&d<VD)vis.push([d,{type:'LM',x:0}]);}
+  vis.sort((a,b)=>b[0]-a[0]).forEach(([d,s_])=>{const i=idxForD(d),u=(d-ds[i])/((ds[i+1]||ds[i]+1)-ds[i]);const xx=xs[i]+(xs[i+1]-xs[i])*u;
+    const X=w/2+(xx+s_.x)*(w*0.42)/d,Y=hz+(h-hz)/d,S=(h-hz)/d;const fade=Math.min(1,(VD-d)/15);ctx.globalAlpha=fade;
+    if(s_.type==='LM')drawLandmark(ctx,sc.lm,X,Y,S,w,h,o);else prop(ctx,s_.type,X,Y,S,s_.v,sc.tod);ctx.globalAlpha=1;});
+  // birds
+  if(sc.tod!=='night'&&sc.tod!=='storm'){ctx.strokeStyle='rgba(40,40,50,.55)';ctx.lineWidth=1.3;sc.birds.forEach(b=>{const bx=((b.x+tm*b.sp)%1.1)*w,by=b.y*hz+Math.sin(tm*2+b.ph)*4,f=Math.sin(tm*9+b.ph)*3;ctx.beginPath();ctx.moveTo(bx-6,by-f);ctx.lineTo(bx,by);ctx.lineTo(bx+6,by-f);ctx.stroke();});}
+  // weather
+  if(sc.w==='rain'){ctx.strokeStyle='rgba(220,230,245,.5)';ctx.lineWidth=1.2;ctx.beginPath();for(let i=0;i<220;i++){const X=(i*137.508)%(w+40)-20;const Y=((i*71.3)+tm*1200)%(h+60)-30;ctx.moveTo(X,Y);ctx.lineTo(X-6,Y+22);}ctx.stroke();}
+  if(sc.w==='snow'){ctx.fillStyle='rgba(255,255,255,.85)';for(let i=0;i<180;i++){const X=((i*97.13)+Math.sin(tm*1.3+i)*30+tm*60)%(w+20)-10;const Y=((i*53.7)+tm*160*(0.6+(i%5)/6))%(h+20)-10;ctx.beginPath();ctx.arc(X,Y,1+(i%3),0,7);ctx.fill();}}
+  if(sc.w==='rock'){for(let i=0;i<7;i++){const ph=((tm*.55+i*.31)%1);const X=w*(.06+i*.035)+ph*w*.12,Y=-20+ph*h*.85;ctx.fillStyle='#4E4236';ctx.beginPath();ctx.arc(X,Y,4+i*1.3,0,7);ctx.fill();ctx.fillStyle='rgba(120,100,80,.25)';ctx.beginPath();ctx.arc(X-6,Y-14,3+i,0,7);ctx.fill();}}
+  ctx.restore();
+  // grade, vignette, letterbox
+  ctx.fillStyle=T.tint;ctx.fillRect(0,0,w,h);
+  if(T.light<1){ctx.fillStyle=`rgba(10,15,35,${(1-T.light)*.5})`;ctx.fillRect(0,0,w,h);}
+  const vg=ctx.createRadialGradient(w/2,h*.55,Math.min(w,h)*.32,w/2,h*.55,Math.max(w,h)*.78);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.48)');ctx.fillStyle=vg;ctx.fillRect(0,0,w,h);
+  if(o.letterbox){ctx.fillStyle='#000';const lb=h*.07*o.letterbox;ctx.fillRect(0,0,w,lb);ctx.fillRect(0,h-lb,w,lb);}
+}
+function prop(ctx,k,x,y,S,v,tod){
+  const s=S;
+  switch(k){
+  case 'rock':{ctx.fillStyle=v>.5?'#5E4F40':'#6B5A49';const r=s*(.18+v*.25);ctx.beginPath();ctx.moveTo(x-r,y);ctx.lineTo(x-r*.6,y-r*.8);ctx.lineTo(x+r*.2,y-r);ctx.lineTo(x+r,y-r*.3);ctx.lineTo(x+r,y);ctx.fill();ctx.fillStyle='rgba(255,255,255,.12)';ctx.beginPath();ctx.moveTo(x-r*.6,y-r*.8);ctx.lineTo(x+r*.2,y-r);ctx.lineTo(x,y-r*.5);ctx.fill();break;}
+  case 'pine':{const H=s*(1.4+v);ctx.fillStyle='#4A3828';ctx.fillRect(x-s*.04,y-H*.25,s*.08,H*.25);ctx.fillStyle=v>.5?'#2C5338':'#335E40';for(let j=0;j<3;j++){const yy=y-H*.2-j*H*.25,ww=s*(.42-j*.1);ctx.beginPath();ctx.moveTo(x-ww,yy);ctx.lineTo(x,yy-H*.38);ctx.lineTo(x+ww,yy);ctx.fill();}break;}
+  case 'shade':{ctx.fillStyle='#4A3828';ctx.fillRect(x-s*.04,y-s*1.1,s*.08,s*1.1);ctx.fillStyle='#4F7A3E';[[-.3,-1.2,.35],[.25,-1.25,.32],[0,-1.5,.4]].forEach(c=>{ctx.beginPath();ctx.arc(x+c[0]*s,y+c[1]*s,c[2]*s,0,7);ctx.fill();});break;}
+  case 'flags':{const H=s*2;ctx.strokeStyle='#5A4632';ctx.lineWidth=Math.max(1,s*.04);ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y-H);ctx.stroke();const cols=['#2F5FA8','#F2F2EE','#C2352E','#2F7D46','#E8B931'];ctx.strokeStyle='rgba(60,50,40,.6)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x,y-H);ctx.lineTo(x+s*1.4,y-s*.2);ctx.stroke();for(let j=0;j<10;j++){const u=(j+.5)/10,fx=x+s*1.4*u,fy=y-H+(H-s*.2)*u;ctx.fillStyle=cols[j%5];ctx.fillRect(fx-s*.05,fy,s*.1,s*.13);}break;}
+  case 'chorten':{ctx.fillStyle='#EDE9E1';ctx.fillRect(x-s*.35,y-s*.25,s*.7,s*.25);ctx.fillRect(x-s*.25,y-s*.45,s*.5,s*.2);ctx.beginPath();ctx.arc(x,y-s*.6,s*.2,Math.PI,0);ctx.fill();ctx.fillRect(x-s*.12,y-s*.62,s*.24,s*.05);ctx.fillStyle='#C9A24A';ctx.beginPath();ctx.moveTo(x-s*.05,y-s*.66);ctx.lineTo(x,y-s*1.05);ctx.lineTo(x+s*.05,y-s*.66);ctx.fill();break;}
+  case 'snowpole':{ctx.fillStyle=v>.5?'#C0392B':'#2C3E50';for(let j=0;j<4;j++){ctx.fillStyle=j%2?'#F2F2F2':'#C0392B';ctx.fillRect(x-s*.03,y-s*(j+1)*.2,s*.06,s*.2);}break;}
+  case 'sign':{ctx.fillStyle='#5A4632';ctx.fillRect(x-s*.03,y-s*.9,s*.06,s*.9);ctx.fillStyle='#2F6A3E';ctx.fillRect(x-s*.32,y-s*1.05,s*.64,s*.28);ctx.fillStyle='rgba(255,255,255,.8)';ctx.fillRect(x-s*.24,y-s*.94,s*.48,s*.04);break;}
+  case 'teabush':{ctx.fillStyle=v>.5?'#3E7A3A':'#46843F';ctx.beginPath();ctx.ellipse(x,y-s*.14,s*.32,s*.17,0,Math.PI,0);ctx.fill();ctx.fillStyle='rgba(180,220,120,.35)';ctx.beginPath();ctx.ellipse(x-s*.08,y-s*.22,s*.12,s*.05,0,0,7);ctx.fill();break;}
+  case 'pole':{ctx.strokeStyle='#3F352C';ctx.lineWidth=Math.max(1,s*.05);ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y-s*1.8);ctx.moveTo(x-s*.3,y-s*1.7);ctx.lineTo(x+s*.3,y-s*1.7);ctx.stroke();break;}
+  case 'lamp':{ctx.strokeStyle='#22242E';ctx.lineWidth=Math.max(1,s*.05);ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y-s*1.8);ctx.lineTo(x+s*(x<ctx.canvas.width/ (window.devicePixelRatio||1)/2?.3:-.3),y-s*1.85);ctx.stroke();const lx=x+s*(x<ctx.canvas.width/(window.devicePixelRatio||1)/2?.3:-.3);const lg=ctx.createRadialGradient(lx,y-s*1.8,1,lx,y-s*1.8,s*.9);lg.addColorStop(0,'rgba(255,220,150,.9)');lg.addColorStop(1,'rgba(255,220,150,0)');ctx.fillStyle=lg;ctx.beginPath();ctx.arc(lx,y-s*1.8,s*.9,0,7);ctx.fill();break;}
+  case 'bldg':{const H=s*(1.5+v*2.5),W=s*(.8+v*.6);ctx.fillStyle=v>.5?'#2A2E45':'#33374F';ctx.fillRect(x-W/2,y-H,W,H);ctx.fillStyle='rgba(255,210,130,.85)';for(let yy=y-H+s*.15;yy<y-s*.2;yy+=s*.28)for(let xx=x-W/2+s*.1;xx<x+W/2-s*.12;xx+=s*.22)if(((xx*7+yy*3)|0)%3)ctx.fillRect(xx,yy,s*.1,s*.12);break;}
+  case 'palm':{ctx.strokeStyle='#5A4632';ctx.lineWidth=Math.max(1,s*.07);ctx.beginPath();ctx.moveTo(x,y);ctx.quadraticCurveTo(x+s*.25,y-s*1.0,x+s*.1,y-s*1.9);ctx.stroke();ctx.strokeStyle=v>.5?'#3E7A3F':'#4A8A45';ctx.lineWidth=Math.max(1,s*.09);for(let a=0;a<6;a++){const an=-Math.PI+a*Math.PI/5;ctx.beginPath();ctx.moveTo(x+s*.1,y-s*1.9);ctx.quadraticCurveTo(x+s*.1+Math.cos(an)*s*.4,y-s*2.15,x+s*.1+Math.cos(an)*s*.75,y-s*1.75+Math.abs(Math.sin(an))*s*.25);ctx.stroke();}break;}
+  case 'hut':{ctx.fillStyle='#9C7A52';ctx.fillRect(x-s*.45,y-s*.45,s*.9,s*.45);ctx.fillStyle='#8E99A3';ctx.beginPath();ctx.moveTo(x-s*.55,y-s*.42);ctx.lineTo(x-s*.35,y-s*.78);ctx.lineTo(x+s*.35,y-s*.78);ctx.lineTo(x+s*.55,y-s*.42);ctx.fill();ctx.fillStyle='#3B2E22';ctx.fillRect(x-s*.08,y-s*.3,s*.16,s*.3);break;}
+  case 'boat':{ctx.fillStyle='#5B3F28';ctx.beginPath();ctx.moveTo(x-s*.6,y-s*.12);ctx.lineTo(x+s*.6,y-s*.12);ctx.lineTo(x+s*.4,y);ctx.lineTo(x-s*.4,y);ctx.fill();ctx.fillStyle='#E8DCC0';ctx.beginPath();ctx.moveTo(x,y-s*.14);ctx.lineTo(x,y-s*.75);ctx.lineTo(x+s*.35,y-s*.18);ctx.fill();break;}
+  case 'mangrove':{ctx.strokeStyle='#4A3A2A';ctx.lineWidth=Math.max(1,s*.04);for(let j=-2;j<=2;j++){ctx.beginPath();ctx.moveTo(x+j*s*.12,y);ctx.quadraticCurveTo(x+j*s*.06,y-s*.35,x,y-s*.45);ctx.stroke();}ctx.fillStyle=v>.5?'#2F5E3A':'#3A6B43';ctx.beginPath();ctx.ellipse(x,y-s*.8,s*.5,s*.38,0,0,7);ctx.fill();break;}
+  }
+}
+function drawLandmark(ctx,k,x,y,S,w,h,o){
+  const s=S;ctx.save();
+  if(k==='dam'){const W=s*4.2,H=s*3.2;ctx.fillStyle='#B8B3A8';ctx.beginPath();ctx.moveTo(x-W,y);ctx.lineTo(x-W*.8,y-H);ctx.lineTo(x+W*.8,y-H);ctx.lineTo(x+W,y);ctx.fill();ctx.fillStyle='#9E998F';for(let j=-3;j<=3;j++)ctx.fillRect(x+j*W*.22-s*.05,y-H,s*.1,H);ctx.fillStyle='#D9D5CC';ctx.fillRect(x-W*.8,y-H-s*.15,W*1.6,s*.15);
+    ctx.strokeStyle='#E0A11B';ctx.lineWidth=Math.max(1,s*.05);[[-1.1,4.2],[1.2,3.6]].forEach(([dx,hh])=>{const cx=x+dx*W;ctx.beginPath();ctx.moveTo(cx,y-H);ctx.lineTo(cx,y-H-s*hh);ctx.lineTo(cx+(dx<0?1:-1)*s*2.2,y-H-s*hh);ctx.moveTo(cx,y-H-s*hh*.8);ctx.lineTo(cx+(dx<0?1:-1)*s*1.6,y-H-s*hh);ctx.stroke();});
+    ctx.fillStyle='rgba(255,255,255,.75)';ctx.font=`700 ${Math.max(10,s*.32)}px sans-serif`;ctx.textAlign='center';ctx.fillText('메독 수력발전 공사 현장',x,y-H+s*.6);}
+  else if(k==='village'){[[-1.6,0],[-.4,-.3],[1.2,.1]].forEach(([dx,dy],j)=>{const hx=x+dx*s,hy=y+dy*s,W=s*.9,H=s*.7;ctx.fillStyle='#EFE8DA';ctx.fillRect(hx-W/2,hy-H,W,H);ctx.fillStyle='#7A2E2A';ctx.fillRect(hx-W/2-s*.05,hy-H-s*.1,W+s*.1,s*.12);ctx.fillStyle='#2E2A28';for(let q=0;q<2;q++)ctx.fillRect(hx-W*.3+q*W*.4,hy-H*.6,s*.16,s*.2);});prop(ctx,'flags',x-s*2.4,y,s,0);prop(ctx,'flags',x+s*.2,y-s*.3,s*.9,0);}
+  else if(k==='camp'){ctx.fillStyle='#E0772E';ctx.beginPath();ctx.moveTo(x-s*1.4,y);ctx.lineTo(x-s*.8,y-s*.8);ctx.lineTo(x-s*.2,y);ctx.fill();ctx.fillStyle='#D2692A';ctx.beginPath();ctx.moveTo(x+s*.1,y);ctx.lineTo(x+s*.6,y-s*.65);ctx.lineTo(x+s*1.1,y);ctx.fill();ctx.strokeStyle='#5D6066';ctx.lineWidth=Math.max(1,s*.04);ctx.beginPath();ctx.moveTo(x+s*1.6,y);ctx.lineTo(x+s*1.6,y-s*2.4);ctx.stroke();ctx.fillStyle=(o.time*2|0)%2?'#FF3B30':'#7A1D18';ctx.beginPath();ctx.arc(x+s*1.6,y-s*2.45,s*.08,0,7);ctx.fill();ctx.fillStyle='#4A4D55';ctx.fillRect(x+s*1.2,y-s*.35,s*.35,s*.35);}
+  else if(k==='checkpoint'){ctx.fillStyle='#E8E4DA';ctx.fillRect(x+s*.9,y-s*1.0,s*.8,s*1.0);ctx.fillStyle='#45556B';ctx.fillRect(x+s*.85,y-s*1.1,s*.9,s*.14);ctx.fillStyle='#9CC3E0';ctx.fillRect(x+s*1.0,y-s*.75,s*.6,s*.3);ctx.fillStyle='#3B3B3B';ctx.fillRect(x-s*.9,y-s*.5,s*.1,s*.5);for(let j=0;j<8;j++){ctx.fillStyle=j%2?'#F2F2F2':'#C0392B';ctx.fillRect(x-s*.8+j*s*.2,y-s*.5,s*.2,s*.1);}
+    [-1.6,2.1].forEach(dx=>{ctx.strokeStyle='#2E2E2E';ctx.lineWidth=Math.max(1,s*.04);ctx.beginPath();ctx.moveTo(x+dx*s,y);ctx.lineTo(x+dx*s,y-s*2);ctx.stroke();ctx.fillStyle='rgba(255,240,190,.9)';ctx.fillRect(x+dx*s-s*.12,y-s*2.05,s*.24,s*.1);});}
+  else if(k==='ghat'){ctx.fillStyle='#BCA88A';for(let j=0;j<4;j++)ctx.fillRect(x+s*.6,y-s*.1*(j+1),s*(1.6-j*.25),s*.1);prop(ctx,'boat',x+s*2.4,y,s*1.4,.3);prop(ctx,'shade',x-s*1.2,y,s*1.2,.5);}
+  else if(k==='village2'){prop(ctx,'hut',x-s*1.2,y,s*1.3,.2);prop(ctx,'hut',x+s*.3,y-s*.2,s*1.1,.6);prop(ctx,'palm',x+s*1.6,y,s*1.2,.5);prop(ctx,'palm',x-s*2.4,y,s*1.1,.2);}
+  else if(k==='lighthouse'){const H=s*3.4;for(let j=0;j<6;j++){ctx.fillStyle=j%2?'#F2EEE6':'#B8382F';const t0=y-H*j/6,t1=y-H*(j+1)/6,wb=s*(.32-j*.025),wt=s*(.32-(j+1)*.025);ctx.beginPath();ctx.moveTo(x+s*1.5-wb,t0);ctx.lineTo(x+s*1.5-wt,t1);ctx.lineTo(x+s*1.5+wt,t1);ctx.lineTo(x+s*1.5+wb,t0);ctx.fill();}
+    const ang=(o.time||0)*1.6;const lx=x+s*1.5,ly=y-H-s*.1;ctx.fillStyle='rgba(255,236,170,.25)';ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(lx+Math.cos(ang)*w*.6,ly+Math.sin(ang)*h*.08-30);ctx.lineTo(lx+Math.cos(ang)*w*.6,ly+Math.sin(ang)*h*.08+30);ctx.fill();ctx.fillStyle='#FFE9A8';ctx.beginPath();ctx.arc(lx,ly,s*.12,0,7);ctx.fill();
+    ctx.fillStyle='#3A4252';ctx.fillRect(x+s*4,y-s*.5,s*1.6,s*.3);ctx.fillRect(x+s*4.4,y-s*.8,s*.5,s*.3);}
+  else if(k==='research'){const W=s*3,H=s*1.6;ctx.fillStyle='#E9E4D8';ctx.fillRect(x-W/2,y-H,W,H);ctx.fillStyle='#8FA7BF';for(let c=0;c<6;c++)ctx.fillRect(x-W/2+s*.2+c*s*.47,y-H+s*.3,s*.3,s*.45);ctx.fillStyle='#5B6B7C';ctx.fillRect(x-W/2-s*.05,y-H-s*.12,W+s*.1,s*.14);ctx.strokeStyle='#C9CED6';ctx.lineWidth=Math.max(1,s*.05);ctx.beginPath();ctx.arc(x+W*.3,y-H-s*.5,s*.4,Math.PI*.15,Math.PI*1.15);ctx.stroke();ctx.beginPath();ctx.moveTo(x+W*.3,y-H-s*.12);ctx.lineTo(x+W*.3,y-H-s*.5);ctx.stroke();prop(ctx,'flags',x-W*.7,y,s,0);}
+  else if(k==='office'){const W=s*2.4,H=s*3;ctx.fillStyle='#3B3550';ctx.fillRect(x-W/2,y-H,W,H);ctx.fillStyle='rgba(255,210,130,.9)';for(let r=0;r<4;r++)for(let c=0;c<4;c++)if((r+c)%3)ctx.fillRect(x-W/2+s*.25+c*s*.55,y-H+s*.3+r*s*.6,s*.3,s*.35);ctx.fillStyle='#E06A62';ctx.fillRect(x-W*.4,y-s*.75,W*.8,s*.32);ctx.fillStyle='#fff';ctx.font=`700 ${Math.max(9,s*.22)}px sans-serif`;ctx.textAlign='center';ctx.fillText('협상 회담장',x,y-s*.52);}
+  ctx.restore();
+}
+function drawBanner(cv){const r=cv.getBoundingClientRect();if(!r.width)return;const d=Math.min(2,window.devicePixelRatio||1);cv.width=Math.round(r.width*d);cv.height=Math.round(r.height*d);const ctx=cv.getContext('2d');ctx.setTransform(d,0,0,d,0,0);const sc=makeScene((S.lastMove&&S.lastMove.from)||'office',S.loc,null);drawTravel(ctx,r.width,r.height,sc,sc.len-5.5,{sp:0,time:0});}
+let travelling=false;
+function placeName(k){return !k||k==='office'?'탐정단 사무소':NODES[k].full;}
+function playTravel(m){
+  if(!m||m.from===m.to)return Promise.resolve();
+  const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ov=$('#travel'),cv=$('#tcv'),fade=$('#tfade');
+  const sc=makeScene(m.from,m.to,m.w);
+  $('#tr').textContent=`${placeName(m.from)} → ${placeName(m.to)}`;
+  $('#td').textContent=m.to==='office'?'모은 증거를 들고 회담장으로':(m.days===0?'운 좋게 하루도 걸리지 않은 길':`${m.days}일 걸린 길`)+(m.w?' · '+EVENTS[m.w].t:'');
+  const cap=$('.tcap');cap.style.opacity=0;
+  ov.hidden=false;travelling=true;
+  const d=Math.min(2,window.devicePixelRatio||1),rect=ov.getBoundingClientRect();cv.width=Math.round(rect.width*d);cv.height=Math.round(rect.height*d);
+  const ctx=cv.getContext('2d');ctx.setTransform(d,0,0,d,0,0);
+  const dur=reduce?1000:(m.w?6200:5200);let start=null,done=false;const L=sc.len-4.2;
+  fade.style.transition='none';fade.style.opacity=1;requestAnimationFrame(()=>{fade.style.transition='opacity .6s';fade.style.opacity=0;});
+  return new Promise(res=>{
+    const finish=()=>{if(done)return;done=true;fade.style.opacity=1;setTimeout(()=>{ov.hidden=true;travelling=false;res();},620);};
+    $('#tskip').onclick=finish;
+    let lastPos=0;
+    function frame(ts){if(done)return;if(start===null)start=ts;const el=ts-start,u=Math.min(1,el/dur);
+      const e=reduce?1:(u<.5?4*u*u*u:1-Math.pow(-2*u+2,3)/2);const pos=L*e;const sp=Math.min(1,Math.abs(pos-lastPos)*8);lastPos=pos;
+      cap.style.opacity=u<.08?u/.08:(u>.55&&u<.7?1:(u<.55?1:1));
+      drawTravel(ctx,rect.width,rect.height,sc,pos,{sp,time:el/1000,letterbox:Math.min(1,u*6,(1-u)*6+.0)});
+      if(u>=1){setTimeout(finish,350);return;}requestAnimationFrame(frame);}
+    requestAnimationFrame(frame);
+  });
+}
+
+/* ---------- confirm dialog ---------- */
+let cfResolve=null;
+function askConfirm(title,body,okLabel){
+  return new Promise(res=>{cfResolve=res;
+    $('#dlgbody').innerHTML=`<h3>${esc(title)}</h3><p>${esc(body)}</p><div class="row"><button class="btn" data-cf="yes">${esc(okLabel||'확인')}</button><button class="btn ghost" data-cf="no">취소</button></div>`;
+    if(!$('#dlg').open)$('#dlg').showModal();});
+}
+
+function vTalk(){
+  const t=S.talk,k=t.who,p=NPC[k],asked=S.asked[k]||[];
+  const log=t.log.map(m=>`<div class="msg ${m.r} ${m.cold?'cold':''}">${esc(m.t)}${m.got?`<span class="got">수첩에 기록: ${esc(m.got)}</span>`:''}${m.cold?'<span class="lost">상대가 경계하며 입을 닫았다. 이번 대화는 여기까지다.</span>':''}</div>`).join('');
+  const qleft=2-t.n;
+  const qs=p.qs.map((q,i)=>`<button data-q="${i}" class="${asked.includes(i)?'used':''}" ${asked.includes(i)||qleft<=0||busy?'disabled':''}>${esc(q.q)}</button>`).join('');
+  const freeUsed=S.free[k]||0;
+  const free=aiState==='on'?`<p class="sub">자유 질문 (남은 ${3-freeUsed}번, 날짜 소모 없음)</p><form class="free" id="freef"><input id="freein" maxlength="160" placeholder="직접 질문해 보세요" ${busy||freeUsed>=3?'disabled':''}><button class="btn small" ${busy||freeUsed>=3?'disabled':''}>묻기</button></form><p class="note">자유 질문의 답은 AI가 기사 내용을 바탕으로 만듭니다. 수첩에는 기록되지 않으니, 중요한 내용은 직접 메모하세요.</p>`:'';
+  return `<div class="card"><div class="npc"><div class="face">${k}</div><div><h2>${p.name}</h2><span class="where">${k==='F'&&S.loc!=='kath'?'화상 회의':NODES[S.loc].full}</span></div></div>
+  <div class="log" aria-live="polite"><div class="msg a" style="font-family:var(--sans);background:transparent;color:var(--muted);padding:0">${esc(p.hello)}</div>${log}</div>
+  <p class="sub">질문 고르기 (이번 대화에서 남은 질문 ${Math.max(0,qleft)}개)</p><div class="qs">${qs}</div>${free}
+  <div class="acts" style="margin-top:14px"><button class="act" data-act="endtalk"><span>대화 마치기</span><span class="c">돌아가기</span></button></div></div>`;
+}
+
+/* actions */
+function spend(d){S.day=S.day+d;}
+function arrive(to,days,w,note){
+  const from=S.loc;S.loc=to;S.visited[to]=true;S.mode='loc';S.lastMove={from,to,days,w:w||null,note:note||'',id:Date.now()+Math.random()};
+  save();renderStatus();
+  playTravel(S.lastMove).then(()=>{render();if(note)toast(note);});
+}
+function travel(to){
+  if(travelling)return;
+  const e=edgesFrom(S.loc).find(x=>x.to===to);if(!e||e.cost>left())return;
+  const evk=e.ev;
+  if(evk&&!S.events[evk]&&Math.random()<0.6){S.events[evk]=true;save();showEvent(evk,e,to);return;}
+  spend(e.cost);arrive(to,e.cost);
+}
+function showEvent(evk,e,to){
+  const ev=EVENTS[evk];const canWait=left()>=e.cost+1;
+  $('#dlgbody').innerHTML=`<div class="event-ic">${ev.ic}</div><h3>${ev.t}</h3><p>${ev.txt}</p><p class="note">평소라면 ${e.cost}일 걸리는 길이다. 지금 수사 ${S.day}일째.</p>
+  <div class="row"><button class="btn" data-ev="wait" ${canWait?'':'disabled'}>${ev.wait} (+1일)</button><button class="btn ghost" data-ev="risk">위험을 무릅쓰고 지나간다 (반반: 성공 +0일 / 실패 +2일)</button><button class="btn ghost" data-ev="back">이동을 포기한다</button></div>`;
+  $('#dlg').dataset.to=to;$('#dlg').dataset.cost=e.cost;$('#dlg').dataset.ev=evk;$('#dlg').showModal();
+}
+function resolveEvent(ch){
+  const d=$('#dlg'),to=d.dataset.to,cost=+d.dataset.cost;
+  if(ch==='back'){d.close();return;}
+  const w=d.dataset.ev;
+  if(ch==='wait'){d.close();spend(cost+1);arrive(to,cost+1,w,'하루를 기다린 끝에 무사히 도착했다.');return;}
+  const ok=Math.random()<0.5;
+  $('#dlgbody').innerHTML=`<div class="event-ic coin" id="coin">🪙</div><h3>운명에 맡긴다…</h3><p class="note">성공하면 제때 도착, 실패하면 이틀이 더 걸린다. 확률은 반반.</p><div id="coinres" style="min-height:80px"></div>`;
+  d.dataset.ev='';
+  setTimeout(()=>{const c=$('#coin');if(c)c.classList.add('done');
+    $('#coinres').innerHTML=ok?`<div class="result" style="border-color:var(--ok)"><b>성공!</b> 위험한 길을 무사히 지났다. ${cost}일 만에 도착한다.</div><div class="row"><button class="btn" data-risk="go">계속 이동</button></div>`
+      :`<div class="result"><b>실패!</b> 길이 무너져 돌아가야 했다. 이틀이 더 걸려 ${cost+2}일 만에 도착한다.</div><div class="row"><button class="btn" data-risk="go">계속 이동</button></div>`;
+    d.dataset.result=ok?'ok':'fail';d.dataset.w=w;},1300);
+}
+function travel(to){
+  if(travelling)return;const e=edgesFrom(S.loc).find(x=>x.to===to);if(!e)return;
+  if(e.ev){showEvent(e.ev,e,to);return;}
+  spend(1);arrive(to,1);
+}
+function showEvent(evk,e,to){
+  const ev=EVENTS[evk];
+  $('#dlgbody').innerHTML=`<div class="event-ic">${ev.ic}</div><h3>위험 구간 · ${ev.t}</h3><p>${ev.txt}</p>
+  <div class="riskopts"><button class="act" data-ev="wait"><span>${ev.wait}<small>안전하게 간다</small></span><span class="c">1일</span></button>
+  <button class="act" data-ev="risk"><span>위험을 무릅쓰고 지금 지나간다<small>반반의 운: 운이 좋으면 바로 도착, 위험을 만나면 이틀</small></span><span class="c">0일 / 2일</span></button>
+  <button class="act" data-ev="back"><span>이동을 포기한다</span><span class="c">취소</span></button></div>`;
+  const d=$('#dlg');d.dataset.to=to;d.dataset.ev=evk;d.dataset.w=evk;d.showModal();
+}
+function resolveEvent(ch){
+  const d=$('#dlg'),to=d.dataset.to,w=d.dataset.w;
+  if(ch==='back'){d.close();return;}
+  if(ch==='wait'){d.close();spend(1);arrive(to,1,w,'기다렸다가 안전하게 도착했다.');return;}
+  const ok=Math.random()<0.5;d.dataset.ev='';
+  $('#dlgbody').innerHTML=`<div class="event-ic coin" id="coin">🪙</div><h3>운명에 맡긴다…</h3><p class="note">운이 좋으면 0일, 위험을 만나면 2일. 확률은 반반.</p><div id="coinres" style="min-height:80px"></div>`;
+  setTimeout(()=>{const c=$('#coin');if(c)c.classList.add('done');
+    $('#coinres').innerHTML=(ok?`<div class="result ok"><b>성공!</b> 위험한 길을 단숨에 지났다. 하루도 걸리지 않았다.</div>`:`<div class="result"><b>위험을 만났다!</b> 길이 막혀 돌아가느라 이틀이 걸렸다.</div>`)+`<div class="row"><button class="btn" data-risk="go">계속 이동</button></div>`;
+    d.dataset.result=ok?'ok':'fail';},1300);
+}
+function startTalk(k){if(left()<1)return;spend(1);S.talk={who:k,n:0,log:[]};S.mode='talk';save();render();}
+function ask(i){
+  const t=S.talk,k=t.who,q=NPC[k].qs[i];if(t.n>=2)return;
+  (S.asked[k]=S.asked[k]||[]).push(i);
+  t.log.push({r:'q',t:q.q});
+  if(q.bias){S.bias++;t.n=2;t.log.push({r:'a',t:q.a,cold:true});}
+  else{t.n++;const isNew=addClue(q.clue);const msg={r:'a',t:q.a};if(isNew)msg.got=CLUES[q.clue].k+' 단서';t.log.push(msg);
+    if(q.unlock&&!S.unlocked[q.unlock]){S.unlocked[q.unlock]=true;S.fresh=q.unlock==='F'?null:q.unlock;setTimeout(()=>toast(q.unlock==='F'?'새 연락처를 얻었다: 국제 물 전문가 (화상 회의)':'지도에 새 장소가 나타났다: 지질 조사 캠프'),400);}}
+  save();render();
+}
+function observe(n){if(left()<1||S.obs[n])return;spend(1);S.obs[n]=true;addClue(NODES[n].obs.clue);toast('수첩에 지형 단서를 기록했다.');save();render();
+  $('#dlgbody').innerHTML=`<h3>${NODES[n].obs.t}</h3><div class="clue"><b class="k-지형">지형</b>${esc(CLUES[NODES[n].obs.clue].t)}</div><div class="row"><button class="btn" data-close>수첩에 넣기</button></div>`;$('#dlg').showModal();}
+function notebook(tab){
+  tab=tab||'people';
+  const m=met();
+  const byWho=w=>S.clues.filter(c=>CLUES[c].who===w).map(c=>`<div class="clue"><b class="k-${CLUES[c].k}">${CLUES[c].k}</b>${esc(CLUES[c].t)}</div>`).join('');
+  let body='';
+  if(tab==='people') body=m.size?'ABCDEF'.split('').filter(k=>m.has(k)).map(k=>`<p class="sub">${k}. ${NPC[k].name}</p>${byWho(k)}`).join(''):'<p class="note">아직 만난 관계자가 없다. 지도에서 사람이 있는 장소로 가 보자.</p>';
+  if(tab==='land') body=byWho('T')||'<p class="note">아직 지형 단서가 없다. 장소마다 현장 조사를 할 수 있다.</p>';
+  if(tab==='article') body=`<div class="article"><h4>기자의 기사 (복원 ${restored()*10}%)</h4>${ARTICLE.map(a=>S.clues.includes(a.c)?`<span class="restored">${esc(a.t)}</span>`:`<span class="redact">${esc(a.t)}</span>`).join(' ')}</div><p class="note">관련 단서를 찾으면 지워진 문장이 되살아난다.</p>`;
+  $('#dlgbody').innerHTML=`<h3>수사 수첩</h3><div class="nb-tabs">${[['people','관계자 진술'],['land','지형 단서'],['article','기사 복원']].map(([id,l])=>`<button data-nb="${id}" aria-pressed="${tab===id}">${l}</button>`).join('')}</div><div style="max-height:60vh;overflow-y:auto">${body}</div><div class="row"><button class="btn" data-close>닫기</button></div>`;
+  if(!$('#dlg').open)$('#dlg').showModal();
+}
+
+function personaPrompt(k,q){
+  const p=NPC[k],log=S.talk.log.filter(m=>m.r==='q'||m.r==='a').slice(-8);
+  return `너는 한국 고등학교 지리 수업 추리 게임 속 가상 인물이다. 학생 탐정이 너에게 질문하고 있다.
+규칙:
+- 아래 [알고 있는 사실]만 근거로, 이 인물의 입장에서 한국어 존댓말로 2~4문장으로 답한다.
+- 사실 목록에 없는 숫자, 날짜, 사건, 사람 이름을 지어내지 않는다. 모르는 것은 인물답게 "그건 제가 말씀드리기 어렵습니다"처럼 피한다.
+- 다른 인물의 속마음을 단정하지 않는다. 게임의 정답이나 진범이 누구인지 판정하지 않는다.
+- 학생을 존중하고, 폭력적이거나 혐오적인 표현, 특정 국가나 민족을 깎아내리는 표현을 쓰지 않는다.
+- 질문에 편견이나 단정이 담겨 있으면 인물답게 불편함을 드러내되 정중하게 답한다.
+- 수업과 관계없는 질문이면 정중하게 사건 이야기로 돌아온다.
+- 인물의 대사만 쓴다. 따옴표, 이름표, 설명을 붙이지 않는다.
+
+[인물] ${p.name}
+[말투] ${p.tone}
+[알고 있는 사실] ${p.facts}
+
+[지금까지의 대화]
+${log.map(m=>(m.r==='q'?'탐정: ':'인물: ')+m.t).join('\n')||'(없음)'}
+
+[탐정의 새 질문]
+${q}`;
+}
+async function freeAsk(q){
+  if(!sampleFn||busy)return;const k=S.talk.who;if((S.free[k]||0)>=3)return;
+  S.free[k]=(S.free[k]||0)+1;S.talk.log.push({r:'q',t:q});busy=true;save();render();
+  const lg=$('.log');const b=document.createElement('div');b.className='msg a';b.textContent='생각하는 중...';lg.appendChild(b);lg.scrollTop=lg.scrollHeight;
+  let ans='';
+  try{const r=await sampleFn(personaPrompt(k,q),{modelTier:'quick',cache:false,onText:({text})=>{b.textContent=text;lg.scrollTop=lg.scrollHeight;}});ans=(r.text||'').trim();}
+  catch(err){if(err&&err.code==='not_granted'){aiState='off';S.free[k]--;S.talk.log.pop();busy=false;save();render();return;}ans=err&&err.code==='rate_limited'?'(질문이 몰렸어요. 잠시 뒤 다시 물어보세요.)':'(답을 받지 못했어요. 준비된 질문을 이용하세요.)';S.free[k]--;}
+  S.talk.log.push({r:'a',t:ans||'…'});busy=false;save();render();
+}
+async function aiArticle(){
+  if(!sampleFn||busy)return;busy=true;render();
+  const box=$('#aiart');box.style.display='';box.textContent='기사를 쓰는 중...';
+  const notes=S.clues.map(c=>`- [${CLUES[c].who==='T'?'지형':NPC[CLUES[c].who].name}] ${CLUES[c].t}`).join('\n');
+  const prompt=`너는 신문 기자다. 아래 [취재 수첩]에 적힌 내용만 사용해서 얄룽창포강 메독 댐에 관한 한국어 기사를 6~8문장으로 써라.
+규칙: 수첩에 없는 사실, 숫자, 인물, 입장을 절대 추가하지 않는다. 수첩에 등장하지 않는 관계자는 기사에 언급하지 않는다. 고등학생이 읽기 쉬운 문장으로 쓴다. 첫 줄에 제목을 쓰고, 다음 줄부터 본문을 쓴다. 다른 설명은 붙이지 않는다.
+
+[취재 수첩]
+${notes}`;
+  try{const r=await sampleFn(prompt,{modelTier:'quick',cache:false,onText:({text})=>{box.textContent=text;}});S.aiArticle=(r.text||'').trim();}
+  catch(err){if(err&&err.code==='not_granted')aiState='off';S.aiArticle=S.aiArticle||'';box.textContent='기사를 받지 못했어요. 위의 복원된 기사를 이용하세요.';busy=false;save();return;}
+  busy=false;save();render();
+}
+function artText(){return `${S.art.title}\n\n${S.art.body}\n\n- ${S.team} 탐정단 (수사 ${S.day}일, 관계자 ${met().size}/6명)`;}
+async function saveReport(){
+  const txt=artText(),msg=$('#rmsg');
+  if(!downloads){msg.textContent='이 기기에서는 파일 저장을 쓸 수 없어요. 복사해서 제출하세요.';return;}
+  try{await downloads.save({filename:`탐정기사_${(S.team||'탐정단').replace(/[\\/:*?"<>|\s]+/g,'_')}.txt`,data:txt});msg.textContent='저장했습니다.';}
+  catch(err){msg.textContent=err&&err.code==='declined'?'저장을 취소했습니다.':'저장하지 못했어요. 복사해서 제출하세요.';}
+}
+
+{const q=LL(85.3,27.7);NODES.kath.x=q[0];NODES.kath.y=q[1];}
+/* ---------- render ---------- */
+function renderStatus(){
+  const m=met(),r=S.role&&TEAMS[S.role];
+  const dleft=SUMMIT_DAY-S.day;
+  $('#status').innerHTML=`${r?`<span class="rolechip" style="--tc:${r.color}">${r.name}</span>`:''}
+  ${S.started?`<div class="days"><span>수사</span><b>${S.day}</b><span>일째</span><span class="dd ${dleft<0?'late':''}">${S.returned?(S.returnDay>SUMMIT_DAY?`지각 귀환 (${S.returnDay}일)`:`귀환 완료 (${S.returnDay}일)`):(dleft>=0?`회담까지 D-${dleft}`:`회담 ${-dleft}일 지남`)}</span></div>`:''}
+  ${S.role?`<div class="met" aria-label="만난 관계자 ${m.size}명">${'ABCDEF'.split('').map(k=>`<span class="${m.has(k)?'on':''}" title="${m.has(k)?NPC[k].short:'아직 모름'}">${m.has(k)?k:'?'}</span>`).join('')}</div>
+  <div class="meter"><span>정리문 복원</span><div class="bar"><i style="width:${paperPct()}%"></i></div><span>${paperPct()}%</span></div><span class="evn">증거 <b>${S.clues.length}</b>개</span>
+  <button class="btn ghost small" data-act="notebook">수사 수첩</button>`:''}
+  ${G.teacher?`<button class="btn small" data-act="teacher">${teacherOpen?'게임 화면':'교사 콘솔'}</button>`:''}
+  ${G.on?`<div class="crew"><span style="border:0;padding:0">${G.cls}반 ${G.grp}모둠</span>${(G.peers.length?G.peers:[{isMe:true,presence:{name:G.name}}]).map(pr=>`<span class="${pr.isMe?'me':''}">${esc((pr.presence&&pr.presence.name)||'탐정')}</span>`).join('')}</div>`:''}`;
+}
+function renderSide(){
+  const el=$('#side');
+  const v={lobby:vLobby,brief:vBrief,loc:vLoc,talk:vTalk,paper:vPaper,summit:vSummit}[S.mode]||vLobby;
+  el.innerHTML=v();
+  const lg=el.querySelector('.log');if(lg)lg.scrollTop=lg.scrollHeight;
+  el.querySelectorAll('canvas.banner').forEach(drawBanner);
+  if(S.mode==='summit')paintSummit();
+}
+let teacherOpen=false;
+function render(){
+  renderStatus();
+  $('#gamewrap').hidden=teacherOpen;$('#teacher').hidden=!teacherOpen;
+  if(teacherOpen){renderTeacher();return;}
+  const wide=S.mode==='summit'||S.mode==='paper';
+  $('#gamewrap').classList.toggle('wide',wide);
+  if(!wide)renderMap();
+  renderSide();S.fresh=null;
+}
+
+/* ---------- lobby & lottery ---------- */
+const STORY=`<p>얄룽창포강(브라마푸트라강)의 메독 댐을 둘러싼 <b>협상 회담</b>이 보름 뒤에 열린다. 다섯 대표단은 각자의 주장을 담은 <b>입장정리문</b>을 써 두었다.</p>
+<p>그런데 어느 밤, 사무실의 사물인터넷(IoT) 기기를 노린 해킹 공격이 일어났다. 모든 대표단의 정리문이 대부분 지워지고 <b>한 문장씩만</b> 남았다.</p>
+<p>회담까지 남은 시간은 보름(15일). 각 대표단은 비밀리에 <b>조사 탐정</b>을 현지로 보냈다. 너희가 바로 그 탐정이다. 증거를 모아 정리문을 되살리고, 기한 안에 회담장으로 돌아와라.</p>`;
+function vLobby(){
+  const opt=(n,suf,sel)=>Array.from({length:n},(_,i)=>`<option value="${i+1}" ${sel===i+1?'selected':''}>${i+1}${suf}</option>`).join('');
+  const joined=G.on||S.grp;
+  let body='';
+  if(!joined){
+    body=`<p class="sub">우리 모둠 등록</p><div class="grp"><select id="gcls" aria-label="반">${opt(15,'반',S.cls)}</select><select id="ggrp" aria-label="모둠">${opt(5,'모둠',S.grp)}</select>
+      <input class="full" id="team" maxlength="20" placeholder="탐정단 이름 (예: 협곡탐정단)" value="${esc(S.team)}"><input class="full" id="gname" maxlength="10" placeholder="내 이름 (예: 민지)" value="${esc(G.name||'')}">
+      <button class="btn full" data-act="joingroup">입장하기</button></div>
+      <p class="note">입장한 뒤 버튼을 눌러 우리 모둠이 맡을 대표단을 뽑습니다. 같은 반의 1~5모둠은 서로 다른 대표단을 맡으니, 모둠 번호가 다른 모둠과 겹치지 않게 고르세요. ${!groupReady?'':(dbNS?'같은 반·모둠을 고른 기기끼리는 하나의 수사를 함께 진행합니다.':'이 기기는 다른 기기와 연결할 수 없어 혼자 진행합니다. 한 기기를 모둠이 함께 보세요.')}</p>`;
+  } else if(!S.role){
+    body=`<div class="draw"><div class="drum" id="drum">?</div><p><b>${S.cls}반 ${S.grp}모둠</b>, 버튼을 눌러 우리 모둠이 맡을 대표단을 뽑으세요!</p><button class="btn big" data-act="drawrole" id="drawbtn">대표단 뽑기</button><p class="note">같은 반의 다섯 모둠은 서로 다른 대표단을 맡습니다.</p></div>`;
+  } else {
+    const r=TEAMS[S.role];
+    body=`<div class="draw"><div class="drum done" style="--tc:${r.color}">${r.name}</div><p><b>${S.cls}반 ${S.grp}모둠</b>은 <b style="color:${r.color}">${r.name}</b>의 조사 탐정이 되었다!</p><button class="btn" data-act="tobrief">임무 브리핑 받기</button></div>`;
+  }
+  const tools=`<div class="row" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;justify-content:center">${joined?'<button class="btn ghost small" data-act="regroup">반·모둠 다시 고르기</button>':''}<button class="btn ghost small" data-act="replayintro">도입 영상 다시 보기</button></div>`;
+  return `<div class="card"><h2>사라진 입장정리문</h2><p class="where">협상 회담 15일 전</p><div class="dispatch"><span class="flash">긴급</span>${STORY}</div>${body}${tools}</div>`;
+}
+function rollDrum(final,cb){
+  const el=$('#drum');if(!el){cb&&cb();return;}let n=0;const names=ROLE_KEYS.map(k=>TEAMS[k].name);
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const tick=()=>{if(!document.body.contains(el)){cb&&cb();return;}if(n>=(reduce?1:22)){el.textContent=TEAMS[final].name;el.classList.add('done');el.style.setProperty('--tc',TEAMS[final].color);setTimeout(()=>cb&&cb(),reduce?0:900);return;}el.textContent=names[n%5];n++;setTimeout(tick,45+n*n*0.35);};tick();
+}
+function todayStr(){const d=new Date();return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;}
+function autoRole(cls,grp){const R=rng(hashStr(`summit-c${cls}-${todayStr()}`));const perm=ROLE_KEYS.slice();for(let i=perm.length-1;i>0;i--){const j=Math.floor(R()*(i+1));[perm[i],perm[j]]=[perm[j],perm[i]];}return perm[(grp-1)%5];}
+function setRole(r,animate){
+  if(S.role===r)return;
+  const go=()=>{S.role=r;S.clues=[TEAMS[r].paper[0].c];S.unlocked.F=r!=='intl';save();render();};
+  if(animate&&S.mode==='lobby')rollDrum(r,go);else go();
+}
+function localDraw(){
+  const perm=ROLE_KEYS.slice().sort(()=>Math.random()-.5);
+  $('#dlgbody').innerHTML=`<h3>교실용 제비뽑기</h3><p class="note">모둠별 역할이 겹치지 않게 뽑았습니다.</p><table class="tt"><tbody>${perm.map((k,i)=>`<tr><td>${i+1}모둠</td><td class="ldr" data-i="${i}">?</td></tr>`).join('')}</tbody></table><div class="row"><button class="btn" data-close>닫기</button></div>`;
+  if(!$('#dlg').open)$('#dlg').showModal();
+  perm.forEach((k,i)=>setTimeout(()=>{const td=document.querySelector(`.ldr[data-i="${i}"]`);if(td){td.innerHTML=`<b style="color:${TEAMS[k].color}">${TEAMS[k].name}</b>`;}},500+i*600));
+}
+
+/* ---------- brief ---------- */
+function paperHTML(st,showAll){st=st||S;const r=TEAMS[st.role];return `<div class="article"><h4>${r.name} 입장정리문</h4>${r.paper.map(p=>(st.clues||[]).includes(p.c)||showAll?`<span class="restored">${esc(p.t)}</span>`:`<span class="redact">${esc(p.t)}</span>`).join(' ')}</div>`;}
+function vBrief(){
+  const r=TEAMS[S.role],home=NODES[r.home];
+  return `<div class="card"><h2>임무 브리핑</h2><p class="where">${r.name} · 극비</p>
+  <div class="mission" style="--tc:${r.color}"><b>임무</b> ${r.goal}</div>
+  <p class="sub">해킹 뒤 남은 우리 정리문</p>${paperHTML()}
+  <p class="note">까만 줄은 지워진 문장이다. 관련 증거를 찾으면 문장이 되살아난다.</p>
+  <p class="sub">조사 규칙</p><ul class="rules2">
+  <li>강의 상류(협곡 마을)나 하구(벵골만) 중 한 곳에서 조사를 시작한다. 우리 편 현지 관계자는 <b>${home.full}</b>에 있다.</li><li>이동, 대화, 현장 조사에 하루씩 걸린다.</li><li>⚠ 표시가 있는 <b>위험 구간</b>에서는 고를 수 있다. 기다렸다 가면 1일, 위험을 무릅쓰면 반반의 운으로 0일 또는 2일.</li>
+  <li>대화 한 번에 질문은 두 개까지. 편견 섞인 질문을 하면 상대가 입을 닫는다.</li>
+  <li>우리 편 증거뿐 아니라 <b>상대 대표단의 주장과 약점</b>도 모아야 회담에서 유리하다. 증거가 많을수록 협상력이 커진다.</li>
+  <li>어디서든 하루 만에 회담장으로 돌아올 수 있다. <b>15일 안에</b> 돌아오지 못하면 회담 첫 라운드 발언권을 잃는다.</li></ul>
+  <p class="sub">어디서부터 조사할까?</p>
+  <div class="acts"><button class="act" data-depart="village"><span>상류부터 조사<small>얄룽창포강 협곡 마을에서 시작해 강을 따라 내려간다</small></span><span class="c">1일</span></button>
+  <button class="act" data-depart="bay"><span>하구부터 조사<small>벵골만 하구에서 시작해 강을 거슬러 올라간다</small></span><span class="c">1일</span></button></div>
+  <p class="note">우리 편 현지 관계자는 <b>${home.full}</b>에 있다.</p><div style="margin-top:10px"><button class="btn ghost small" data-act="regroup">반·모둠 다시 고르기</button></div></div>`;
+}
+
+/* ---------- location ---------- */
+function vLoc(){
+  const n=NODES[S.loc],k=n.npc;const ex=edgesFrom(S.loc);
+  let people='';
+  if(k&&!(k==='F'&&S.loc!=='kath')){const asked=S.asked[k]||[];const remain=NPC[k].qs.filter((_,i)=>!asked.includes(i)).length;const own=S.role&&TEAMS[S.role].npc===k;
+    people=`<button class="act" data-talk="${k}" ${remain===0?'disabled':''}><span>${asked.length?'다시 ':''}${NPC[k].name}와(과) 이야기하기${own?' <em class="own">우리 편</em>':''}<small>${asked.length?(remain?`아직 묻지 않은 질문 ${remain}개`:'더 물을 것이 없다'):esc(NPC[k].hello)}</small></span><span class="c">1일</span></button>`;}
+  const obs=n.obs?`<button class="act" data-obs="${S.loc}" ${S.obs[S.loc]?'disabled':''}><span>${n.obs.t}<small>${S.obs[S.loc]?'조사를 마쳤다':'지형 단서를 찾는다'}</small></span><span class="c">${S.obs[S.loc]?'완료':'1일'}</span></button>`:'';
+  const call=S.unlocked.F&&S.role!=='intl'?`<button class="act" data-talk="F" ${(S.asked.F||[]).length>=4?'disabled':''}><span>국제 물 전문가와 화상 회의<small>어디서든 연결할 수 있다</small></span><span class="c">1일</span></button>`:'';
+  const moves=ex.map(e=>`<button class="act" data-go="${e.to}"><span>${NODES[e.to].full}(으)로 이동<small>${NODES[e.to].country}${S.visited[e.to]?' · 가 본 곳':''}${e.ev?` · <b class="dz">위험 구간: ${EVENTS[e.ev].t}</b>`:''}</small></span><span class="c">${e.ev?'0~2일':'1일'}</span></button>`).join('');
+  const dleft=SUMMIT_DAY-S.day;
+  const warn=dleft<=1?`<div class="result"><b>${dleft<=0?'회담 날짜가 지났다!':'회담이 코앞이다!'}</b> ${dleft<=0?'지금 돌아가도 지각이다. 첫 라운드 발언권을 잃는다.':'오늘 돌아가지 않으면 지각한다.'}</div>`:'';
+  const banner=MEDIA[S.loc]&&MEDIA[S.loc].type==='image'?`<img class="banner" src="/_blob/${MEDIA[S.loc].id}" alt="${esc(n.full)} 자료 사진">`:`<canvas class="banner" aria-hidden="true"></canvas>`;
+  return `<div class="card">${banner}<h2>${n.full}</h2><p class="where">${n.country}</p><p>${n.desc}</p>${warn}
+  ${(people||obs||call)?`<p class="sub">이곳에서 할 일</p><div class="acts">${people}${obs}${call}</div>`:''}
+  <p class="sub">이동</p><div class="acts">${moves}</div>
+  <p class="sub">회담장으로</p><div class="acts"><button class="act home" data-act="return"><span>회담장으로 귀환하기<small>조사를 끝내고 돌아간다. 다시 나올 수 없다.</small></span><span class="c">1일</span></button></div></div>`;
+}
+
+/* ---------- position paper ---------- */
+function vPaper(){
+  const r=TEAMS[S.role],P=S.paper,late=isLate();
+  const clueList=S.clues.map(c=>{const C=CLUES[c];return `<div class="clue"><b class="k-${C.k}">${C.k}</b>${C.who!=='T'?`<em>${NPC[C.who].short}</em> `:''}${esc(C.t)}</div>`;}).join('');
+  return `<div class="paperwrap"><div class="card"><h2>${r.name} 회담장 귀환</h2><p class="where">${S.returnDay}일째 귀환 · 증거 ${S.clues.length}개 · 정리문 복원 ${paperPct()}%</p>
+  ${late?`<div class="result"><b>지각!</b> 회담 날짜(15일)를 넘겨 돌아왔다. 첫 라운드 발언권이 없고, 중재자는 협상력을 낮게 평가한다.</div>`:`<div class="result ok"><b>기한 안에 귀환!</b> ${SUMMIT_DAY-S.returnDay}일 여유를 두고 돌아왔다.</div>`}
+  <p class="sub">되살린 정리문</p>${paperHTML()}
+  <p class="sub">회담 전에 정리문을 완성하라</p><p class="note" style="margin-top:0">위에서 되살린 원본과 똑같지 않아도 된다. 모은 증거를 바탕으로 우리 대표단의 입장을 자유롭게 정리하라.</p>
+  ${P.submitted?`<div class="article mine"><p><b>핵심 주장</b><br>${esc(P.claim)}</p><p><b>요구안</b><br>${esc(P.demand)}</p><p><b>예상 반론과 대응</b><br>${esc(P.rebut)}</p></div><div class="row" style="display:flex;gap:8px;margin-top:10px"><button class="btn" data-act="tosummit">정상회담장 입장</button><button class="btn ghost" data-act="editpaper">고쳐 쓰기</button></div>`
+  :`<div class="field"><label for="pclaim">우리의 핵심 주장 (증거를 들어서)</label><textarea class="big" id="pclaim" style="min-height:110px">${esc(P.claim)}</textarea></div>
+  <div class="field"><label for="pdemand">회담에서 얻어 내고 싶은 것 (요구안)</label><textarea class="big" id="pdemand" style="min-height:90px">${esc(P.demand)}</textarea></div>
+  <div class="field"><label for="prebut">상대가 할 반론과 우리의 대응</label><textarea class="big" id="prebut" style="min-height:90px">${esc(P.rebut)}</textarea></div>
+  ${G.on?'<p class="note">모둠이 함께 쓸 때는 한 명이 대표로 입력하세요.</p>':''}
+  <div class="row" style="display:flex;gap:8px;align-items:center"><button class="btn" data-act="submitpaper">정리문 확정하고 회담장 입장</button></div>`}
+  </div><div class="card"><h2>수사 수첩</h2><p class="where">회담에서 증거로 제시할 수 있는 단서</p>${clueList||'<p class="note">모은 단서가 없다.</p>'}</div></div>`;
+}
+
+/* ---------- summit (self-running chatroom with AI moderator) ---------- */
+const SUM={msgs:[],unsubM:null,unsubG:null,cls:null,sel:[],groups:[],aiBusy:false};
+const OPEN_ROUND_TURNS=1, CONCLUDE_TURNS=3;
+function subscribeSummit(cls){
+  if(!dbNS||SUM.cls===cls)return;SUM.cls=cls;
+  if(SUM.unsubM)SUM.unsubM();if(SUM.unsubG)SUM.unsubG();
+  SUM.unsubM=dbNS.collection('msgs').where('cls','==',cls).orderBy('ts').limit(500).onSnapshot(q=>{SUM.msgs=q.docs.map(d=>d.data());onSummitUpdate();},()=>{});
+  SUM.unsubG=dbNS.collection('groups').where('cls','==',cls).onSnapshot(q=>{SUM.groups=q.docs.map(d=>d.data()).filter(x=>x&&x.state&&x.state.role);onSummitUpdate();},()=>{});
+}
+function summitMsgs(){return dbNS?SUM.msgs:S.localSummit;}
+/* derived state of the meeting from the message log */
+function meeting(){
+  const ms=summitMsgs();
+  const entered=[...new Set(ms.filter(m=>m.kind==='sys'&&m.join).map(m=>m.team))];
+  if(!dbNS){ROLE_KEYS.forEach(k=>{if(!entered.includes(k))entered.push(k);});}
+  const late={};entered.forEach(k=>{const st=teamState(k);late[k]=st?isLate(st):false;});
+  const turns={};ms.filter(m=>m.kind==='team').forEach(m=>{turns[m.team]=(turns[m.team]||0)+1;});
+  const onTime=entered.filter(k=>!late[k]);
+  const openingDone=onTime.every(k=>(turns[k]||0)>=OPEN_ROUND_TURNS);
+  const concluded=ms.some(m=>m.kind==='ai'&&m.final);
+  const allEnoughTurns=entered.length>=2&&entered.every(k=>(turns[k]||0)>=CONCLUDE_TURNS);
+  let stage='opening';if(openingDone)stage='debate';if(openingDone&&entered.every(k=>(turns[k]||0)>=2))stage='proposal';if(concluded)stage='done';
+  return {ms,entered,late,turns,onTime,openingDone,concluded,allEnoughTurns,stage};
+}
+const STAGE_LABEL={opening:'1라운드 · 기조 발언 (기한 안에 돌아온 대표단 먼저)',debate:'2라운드 · 반박과 토론',proposal:'3라운드 · 합의안 제안',done:'회담 종료 · 중재 결과 발표'};
+function teamState(k){if(!dbNS)return k===S.role?S:null;const g=SUM.groups.find(x=>x.state.role===k);return g?g.state:(k===S.role?S:null);}
+function msgHTML(m){if(m.kind==='ai')return `<div class="smsg ai ${m.final?'final':''}"><span class="who">AI 사회자${m.final?' · 최종 판단':''}</span><div>${esc(m.text)}</div></div>`;
+  if(m.kind==='sys')return `<div class="smsg sys">${esc(m.text)}</div>`;
+  const r=TEAMS[m.team]||{name:m.team,color:'#666'};const ev=(m.evid||[]).map(c=>CLUES[c]?`<span class="evchip">${CLUES[c].k}: ${esc(CLUES[c].t.slice(0,46))}…</span>`:'').join('');
+  return `<div class="smsg team ${m.team===S.role?'mine':''}" style="--tc:${r.color}"><span class="who">${r.name}${m.first?' · 기조 발언':''}${m.by?` · ${esc(m.by)}`:''}</span><div>${esc(m.text)}</div>${ev?`<div class="evs">${ev}</div>`:`<div class="evs"><span class="evchip none">증거 제시 없음</span></div>`}</div>`;}
+function vSummit(){
+  const r=TEAMS[S.role],late=isLate();
+  const chips=S.clues.map(c=>`<button class="evpick" data-ev2="${c}" aria-pressed="${SUM.sel.includes(c)}" title="${esc(CLUES[c].t)}">${CLUES[c].who==='T'?'지형':NPC[CLUES[c].who].short}: ${esc(CLUES[c].t.slice(0,28))}…</button>`).join('');
+  const localCtl=!dbNS?`<div class="row" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px"><label class="note">발언 대표단 <select id="spk">${ROLE_KEYS.map(k=>`<option value="${k}" ${k===S.role?'selected':''}>${TEAMS[k].name}</option>`).join('')}</select></label></div><p class="note">이 기기는 다른 모둠과 연결되지 않아 교실 화면 한 대로 회담을 진행합니다. 발언하는 대표단을 골라 입력하세요.</p>`:'';
+  return `<div class="summit"><div class="card"><div class="shead"><h2>얄룽창포강 협상 회담장</h2><span class="phase" id="phase"></span></div>
+  <div class="who-in" id="whoin"></div>
+  <div class="slog" id="slog" aria-live="polite"></div>
+  ${localCtl}
+  <div class="compose"><textarea id="smsg" maxlength="600" placeholder="${r.name}의 발언을 입력하세요. 아래에서 증거를 골라 함께 제시하면 사회자가 더 무게를 둡니다."></textarea>
+  <p class="sub" style="margin-top:6px">함께 제시할 증거 (최대 3개) · 우리 증거 ${S.clues.length}개</p><div class="evpicks">${chips||'<span class="note">증거가 없다.</span>'}</div>
+  <div class="row" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px"><button class="btn" data-act="sendmsg" id="sendbtn">발언하기</button><span class="note" id="smsgnote"></span></div></div></div>
+  <div class="card"><h2>${r.name}</h2><p class="where">${S.returnDay?`${S.returnDay}일째 귀환`:'미귀환'}${late?' · 지각 (첫 발언권 없음)':' · 기한 준수'} · 증거 ${S.clues.length}개</p>${paperHTML()}
+  <p class="sub">우리 정리문</p><div class="note"><b>주장</b> ${esc(S.paper.claim)||'—'}<br><b>요구</b> ${esc(S.paper.demand)||'—'}<br><b>반론 대응</b> ${esc(S.paper.rebut)||'—'}</div>
+  <p class="sub">회담 규칙</p><ul class="rules2 note"><li>기한(15일) 안에 돌아온 대표단이 먼저 기조 발언을 한다. 지각한 대표단은 그 뒤에 말할 수 있다.</li><li>증거를 붙인 발언만 사회자가 사실로 인정한다. 증거가 많을수록 유리하다.</li><li>모든 대표단이 세 번씩 발언하면 AI 사회자가 합의안과 판단을 발표한다.</li></ul></div></div>`;
+}
+function canSpeak(){
+  if(!dbNS)return {ok:true};
+  const M=meeting();
+  if(M.concluded)return {ok:false,why:'회담이 끝났습니다. 사회자의 판단을 확인하세요.'};
+  if(isLate()&&!M.openingDone){const wait=M.onTime.filter(k=>!(M.turns[k]>=1)).map(k=>TEAMS[k].name);return {ok:false,why:`지각한 대표단은 첫 발언권이 없습니다. ${wait.join(', ')}의 기조 발언이 끝나면 말할 수 있어요.`};}
+  return {ok:true};
+}
+function paintSummit(){
+  const lg=$('#slog');if(!lg)return;const M=meeting();
+  lg.innerHTML=M.ms.length?M.ms.map(msgHTML).join(''):'<p class="note">아직 아무도 입장하지 않았습니다.</p>';
+  if(SUM.aiBusy)lg.insertAdjacentHTML('beforeend','<div class="smsg sys">AI 사회자가 발언을 준비하는 중…</div>');
+  lg.scrollTop=lg.scrollHeight;
+  const ph=$('#phase');if(ph)ph.textContent=dbNS?STAGE_LABEL[M.stage]:'교실 화면 모드';
+  const wi=$('#whoin');if(wi&&dbNS)wi.innerHTML=ROLE_KEYS.map(k=>{const inn=M.entered.includes(k);return `<span class="wchip ${inn?'in':''}" style="--tc:${TEAMS[k].color}">${TEAMS[k].name}${inn?` · ${M.turns[k]||0}회${M.late[k]?' · 지각':''}`:' · 조사 중'}</span>`;}).join('');
+  const c=canSpeak(),b=$('#sendbtn');if(b){b.disabled=!c.ok||SUM.aiBusy;$('#smsgnote').textContent=c.ok?'':c.why;}
+}
+function onSummitUpdate(){if(S.mode==='summit'&&!teacherOpen)paintSummit();if(teacherOpen&&TT.tab==='summit')paintTeacherSummit();}
+async function enterSummit(){
+  S.mode='summit';save();
+  if(dbNS&&S.cls){subscribeSummit(S.cls);
+    if(!S.joinedSummit){S.joinedSummit=true;save();
+      const st=`${TEAMS[S.role].name} 입장 · ${S.returnDay}일째 귀환${isLate()?' (지각)':''} · 증거 ${S.clues.length}개`;
+      try{await dbNS.collection('msgs').add({cls:S.cls,kind:'sys',join:true,team:S.role,text:st,ts:Date.now()});}catch(e){}
+      setTimeout(()=>{if(!SUM.msgs.some(m=>m.kind==='ai'))aiSay('open');},1200);}
+  }
+  render();window.scrollTo({top:0,behavior:'smooth'});
+}
+async function sendMsg(){
+  const t=($('#smsg').value||'').trim();if(!t)return;const c=canSpeak();if(!c.ok){toast(c.why);return;}
+  const team=dbNS?S.role:(($('#spk')&&$('#spk').value)||S.role);
+  const evid=team===S.role?SUM.sel.slice(0,3):[];
+  const before=meeting();
+  const m={cls:S.cls||0,team,grp:S.grp||0,kind:'team',text:t,evid,ts:Date.now(),by:G.name||'',first:!(before.turns[team]>=1)};
+  if(dbNS){try{await dbNS.collection('msgs').add(m);}catch(e){toast('발언을 보내지 못했어요. 다시 시도하세요.');return;}}
+  else{S.localSummit.push(m);save();}
+  $('#smsg').value='';SUM.sel=[];document.querySelectorAll('.evpick').forEach(b=>b.setAttribute('aria-pressed','false'));
+  if(!dbNS)paintSummit();
+  // the sender's device asks the AI moderator to respond (one trigger per message, no duplicates)
+  setTimeout(()=>{const M=meeting();if(M.concluded)return;aiSay(M.allEnoughTurns?'conclude':'reply',m);},dbNS?700:50);
+}
+
+/* ---------- AI moderator ---------- */
+function teamBrief(k){const st=teamState(k);const r=TEAMS[k];if(!st)return `- ${r.name}: 이 기기에는 조사 기록이 없음. 발언에 담긴 내용과 증거로만 판단.`;
+  return `- ${r.name}: ${st.returned?`${st.returnDay}일째 귀환`:'아직 귀환하지 않음'}${isLate(st)?' (기한 15일을 넘김: 첫 발언권 없음, 협상력 약함)':' (기한 준수)'}, 수집한 증거 ${(st.clues||[]).length}개
+  증거 목록: ${(st.clues||[]).map(c=>CLUES[c]?CLUES[c].t:'').join(' / ')||'없음'}
+  정리문 주장: ${(st.paper&&st.paper.claim)||'(없음)'} / 요구: ${(st.paper&&st.paper.demand)||'(없음)'} / 반론 대응: ${(st.paper&&st.paper.rebut)||'(없음)'}`;}
+function mediatorPrompt(kind,extra){
+  const M=meeting();
+  const teams=M.entered.map(teamBrief);
+  const log=M.ms.slice(-45).map(m=>m.kind==='ai'?`[AI 사회자] ${m.text}`:m.kind==='sys'?`[안내] ${m.text}`:`[${(TEAMS[m.team]||{}).name}${m.first?' 기조 발언':''}] ${m.text}${(m.evid||[]).length?` (제시한 증거: ${m.evid.map(c=>CLUES[c]?CLUES[c].t:'').join(' / ')})`:' (증거 제시 없음)'}`).join('\n');
+  const stageNote={opening:'지금은 1라운드(기조 발언)다. 기한 안에 돌아온 대표단이 먼저 한 번씩 기조 발언을 한다. 아직 발언하지 않은 대표단을 지명해 차례를 안내한다.',
+    debate:'지금은 2라운드(반박과 토론)다. 대표단끼리 서로의 주장과 증거를 반박하게 유도한다.',
+    proposal:'지금은 3라운드(합의안 제안)다. 각 대표단이 받아들일 수 있는 구체적 합의안을 내도록 유도한다.',done:''}[M.stage];
+  const task={open:'회담을 연다. 회담 목적, 진행 순서(1라운드 기조 발언 → 2라운드 반박 → 3라운드 합의안 → 사회자 판단), 규칙(증거를 붙인 주장만 인정, 증거가 많을수록 유리, 기한을 넘긴 대표단은 첫 발언권 없음, 모든 대표단이 세 번씩 발언하면 결론)을 4~5문장으로 안내하고 첫 발언자를 지명한다.',
+    reply:`방금 ${extra?TEAMS[extra.team].name:''}이(가) 발언했다. 2~4문장으로 응답하라: 제시한 증거가 주장을 얼마나 뒷받침하는지 짧게 평가하고(증거가 없으면 그 점을 짚는다), 현재 라운드에 맞게 다음 발언자나 다른 대표단을 지명해 질문한다.`,
+    mediate:'지금까지의 논의를 정리하라. 대표단마다 핵심 주장과 제시한 증거를 한 줄씩, 근거가 약한 주장 지적, 다음 발언을 위한 질문 두 개(대표단 지명). 10문장 이내.',
+    conclude:'회담을 마무리하고 판단을 발표하라. 1) 합의문 초안 3~5개 조항(각 조항 끝 괄호에 근거가 된 대표단과 증거), 2) 대표단별 평가 한 줄씩(수집한 증거 수, 실제로 제시한 증거, 기한 준수, 설득력), 3) 이번 회담에서 가장 유리한 결과를 얻은 대표단과 그 이유, 4) 남은 쟁점 한 가지. 마지막 한 문장으로 실제 국제 협상은 이보다 훨씬 복잡하다는 점을 덧붙인다.'}[kind];
+  return `너는 얄룽창포강(브라마푸트라강) 메독 댐을 둘러싼 가상 협상 회담의 AI 사회자이자 중재자다. 한국 고등학교 지리 수업의 역할극이며, 참가 가능한 대표단은 중국 대표단, 인도 대표단, 방글라데시 대표단, 티베트 주민 대표단, 국제 전문가단이다.
+규칙:
+- [대표단 정보]의 증거 목록과 발언에 붙은 증거만 사실로 인정한다. 증거 없는 주장은 근거가 제시되지 않았다고 짚는다.
+- 증거를 많이, 정확하게 제시한 대표단의 주장에 더 큰 무게를 둔다. 기한 15일을 넘긴 대표단은 첫 발언권이 없고 협상력이 약하게 반영된다.
+- 새로운 사실, 숫자, 인물, 실제 국제 협정이나 판결 내용을 지어내지 않는다.
+- 어느 나라나 민족도 깎아내리지 않고 정중하고 공정하게 진행한다. 학생 발언에 부적절한 표현이 있으면 정중히 바로잡는다.
+- 한국어 존댓말로, 머리말이나 이름표 없이 사회자의 말만 쓴다.
+
+[현재 단계] ${stageNote}
+[대표단 정보 (회담장에 들어온 대표단)]
+${teams.join('\n')||'(아직 없음)'}
+
+[회의 기록]
+${log||'(아직 없음)'}
+
+[지금 할 일]
+${task}`;
+}
+async function aiSay(kind,extra){
+  if(!sampleFn){if(kind!=='open')toast('이 기기에서는 AI 사회자를 부를 수 없어요. 선생님 화면에서 응답할 수 있습니다.');return;}
+  if(SUM.aiBusy||TT.busy)return;SUM.aiBusy=true;TT.busy=true;paintSummit();paintTeacherSummit();
+  try{const r=await sampleFn(mediatorPrompt(kind,extra),{modelTier:kind==='conclude'?'default':'quick',cache:false});const text=(r.text||'').trim();
+    const m={cls:S.cls||TT.cls||0,kind:'ai',text,ts:Date.now(),final:kind==='conclude'};
+    if(dbNS)await dbNS.collection('msgs').add(m);else{S.localSummit.push(m);save();}}
+  catch(err){toast(err&&err.code==='rate_limited'?'요청이 몰렸어요. 잠시 뒤 다시 시도하세요.':'AI 사회자 응답을 받지 못했어요.');}
+  SUM.aiBusy=false;TT.busy=false;paintSummit();paintTeacherSummit();
+}
+async function runAutoQueue(){}
+
+/* ---------- teacher console ---------- */
+const TT={tab:'status',cls:1,groups:[],unsubG:null,lot:null,unsubL:null,busy:false,auto:false,autoSince:0,queue:[],running:false};
+function teacherSubscribe(){
+  if(!dbNS)return;
+  if(TT.unsubG)TT.unsubG();if(TT.unsubL)TT.unsubL();
+  TT.unsubG=dbNS.collection('groups').where('cls','==',TT.cls).onSnapshot(q=>{TT.groups=q.docs.map(d=>d.data()).filter(x=>x&&x.state);if(teacherOpen)paintTeacherBody();},()=>{});
+  TT.unsubL=dbNS.doc('lottery/c'+TT.cls).onSnapshot(d=>{TT.lot=d.exists?d.data():null;if(teacherOpen&&TT.tab==='lottery')paintTeacherBody();},()=>{});
+  SUM.cls=null;subscribeSummit(TT.cls);
+}
+function renderTeacher(){
+  const el=$('#teacher');
+  el.innerHTML=`<div class="tbar"><label>반 <select id="tcls">${Array.from({length:15},(_,i)=>`<option value="${i+1}" ${TT.cls===i+1?'selected':''}>${i+1}반</option>`).join('')}</select></label>
+  <div class="ttabs">${[['status','진행 현황'],['summit','정상회담 진행'],['media','자료 화면']].map(([k,l])=>`<button data-ttab="${k}" aria-pressed="${TT.tab===k}">${l}</button>`).join('')}</div></div><div id="tbody"></div>`;
+  paintTeacherBody();
+}
+function paintTeacherBody(){
+  const b=$('#tbody');if(!b)return;
+  if(TT.tab==='status'){
+    const rows=TT.groups.slice().sort((a,c)=>a.grp-c.grp).map(x=>{const st=x.state,r=st.role&&TEAMS[st.role];const m=new Set((st.clues||[]).map(c=>CLUES[c]&&CLUES[c].who).filter(w=>w&&w!=='T'));
+      return `<tr><td>${x.grp}모둠</td><td>${esc(st.team||'')}</td><td>${r?`<b style="color:${r.color}">${r.name}</b>`:'미배정'}</td><td>${st.day||0}일</td><td>${st.returned?(st.returnDay>SUMMIT_DAY?`<span class="late">지각 (${st.returnDay}일)</span>`:`귀환 (${st.returnDay}일)`):(st.loc?NODES[st.loc].name:'출발 전')}</td><td>${(st.clues||[]).length}개</td><td>${m.size}/6</td><td>${paperPct(st)}%</td><td>${st.paper&&st.paper.submitted?'완료':'—'}</td></tr>`;}).join('');
+    b.innerHTML=`<div class="card"><h2>${TT.cls}반 진행 현황</h2><div style="overflow-x:auto"><table class="tt"><thead><tr><th>모둠</th><th>탐정단</th><th>대표단</th><th>수사 일수</th><th>위치·귀환</th><th>증거</th><th>만난 관계자</th><th>정리문 복원</th><th>정리문 확정</th></tr></thead><tbody>${rows||'<tr><td colspan="9" class="note">아직 입장한 모둠이 없습니다.</td></tr>'}</tbody></table></div>
+    <div class="row" style="display:flex;gap:8px;margin-top:14px"><button class="btn ghost small" data-act="resetclass">이 반 기록 모두 지우기</button></div></div>`;
+  }
+  if(TT.tab==='lottery'){
+    const a=TT.lot&&TT.lot.assign;
+    b.innerHTML=`<div class="card"><h2>역할 제비뽑기 · ${TT.cls}반</h2><p class="note">1~5모둠에 다섯 대표단을 겹치지 않게 무작위로 나눕니다. 뽑는 순간 학생 화면에도 결과가 나타납니다.</p>
+    <div class="lotgrid">${[1,2,3,4,5].map(g=>{const k=a&&a[g];return `<div class="lotcell" style="--tc:${k?TEAMS[k].color:'#999'}"><span>${g}모둠</span><b class="lotv" data-g="${g}">${k?TEAMS[k].name:'?'}</b></div>`;}).join('')}</div>
+    <div class="row" style="display:flex;gap:8px;margin-top:14px"><button class="btn" data-act="draw">${a?'다시 뽑기':'제비뽑기 시작'}</button></div>${a?'<p class="note">다시 뽑으면 아직 출발하지 않은 모둠의 역할만 바뀝니다. 이미 출발한 모둠은 그대로 진행합니다.</p>':''}</div>`;
+  }
+  if(TT.tab==='summit'){
+    b.innerHTML=`<div class="tsum"><div class="card"><div class="shead"><h2>협상 회담장 · ${TT.cls}반</h2><span class="phase" id="tphase"></span></div><div class="slog big" id="tslog"></div></div>
+    <div class="card"><h2>사회자 보조</h2><p class="note">회담은 학생들이 입장하면 저절로 시작되고, AI 사회자가 발언마다 응답합니다. 학생 기기에서 AI가 응답하지 못할 때만 아래 버튼을 쓰세요.</p>
+    <div class="phbtns"><button class="btn small" data-ai="open">개회 안내</button><button class="btn small" data-ai="reply">마지막 발언에 응답</button><button class="btn small" data-ai="mediate">중간 정리</button><button class="btn small" data-ai="conclude">지금 결론 내리기</button></div>
+    <p class="sub">안내 메시지</p><div class="free"><input id="sysin" maxlength="200" placeholder="예: 5분 뒤 결론을 내겠습니다"><button class="btn small" data-act="sysmsg">보내기</button></div>
+    <p class="sub">대표단 현황</p><div id="tteams"></div>
+    <div class="row" style="display:flex;gap:8px;margin-top:12px"><button class="btn ghost small" data-act="clearsummit">회담 기록 지우기</button></div></div></div>`;
+    paintTeacherSummit();
+  }
+  if(TT.tab==='media'){
+    const slots=[['office','회담장 (귀환 장면)'],...['village','dam','geo','border','assam','bangla','bay','kath'].map(k=>[k,NODES[k].full])];
+    b.innerHTML=`<div class="card"><h2>자료 화면</h2><p class="note">장소마다 실제 사진이나 짧은 영상(20MB 이하)을 올리면, 그곳으로 이동할 때 그래픽 대신 자료 화면이 재생되고 장소 카드에도 사진이 붙습니다. 수업에 쓸 권리가 있는 자료(직접 찍은 것, 이용 허락이 표시된 공개 자료 등)만 올리고, 출처를 꼭 적어 주세요.</p>
+    <div class="mgrid">${slots.map(([k,l])=>{const m=MEDIA[k];return `<div class="mcell"><b>${l}</b>${m?(m.type==='video'?`<video src="/_blob/${m.id}" muted playsinline preload="metadata"></video>`:`<img src="/_blob/${m.id}" alt="">`):'<div class="mempty">그래픽 사용 중</div>'}
+      <input type="text" id="cr-${k}" maxlength="80" placeholder="출처 (예: 촬영자, 사이트, 이용 허락)" value="${esc(m&&m.credit||'')}">
+      <label class="btn ghost small filebtn">파일 선택<input type="file" accept="image/*,video/mp4,video/webm" data-upload="${k}" hidden></label>${m?`<button class="btn ghost small" data-unmedia="${k}">삭제</button><button class="btn ghost small" data-savecr="${k}">출처 저장</button>`:''}</div>`;}).join('')}</div>
+    ${assetsNS?'':'<p class="result">이 화면에서는 파일을 올릴 수 없습니다. 아티팩트 주인 계정으로 열어 주세요.</p>'}</div>`;
+  }
+}
+function paintTeacherSummit(){
+  const lg=$('#tslog');if(!lg)return;const M=meeting();
+  lg.innerHTML=M.ms.length?M.ms.map(msgHTML).join(''):'<p class="note">아직 아무도 입장하지 않았습니다.</p>';lg.scrollTop=lg.scrollHeight;
+  const ph=$('#tphase');if(ph)ph.textContent=STAGE_LABEL[M.stage]+(TT.busy?' · AI 작성 중…':'');
+  document.querySelectorAll('[data-ai]').forEach(x=>x.disabled=TT.busy||!sampleFn);
+  const tt=$('#tteams');if(tt)tt.innerHTML=ROLE_KEYS.map(k=>{const st=teamState(k);const inn=M.entered.includes(k);return `<div class="tteam" style="--tc:${TEAMS[k].color}"><b>${TEAMS[k].name}</b> ${st?`증거 ${(st.clues||[]).length}개 · ${st.returned?`${st.returnDay}일 귀환${st.returnDay>SUMMIT_DAY?' (지각)':''}`:'조사 중'} · ${inn?`회담장 발언 ${M.turns[k]||0}회`:'회담장 밖'}`:'<span class="note">아직 없음</span>'}</div>`;}).join('');
+}
+async function teacherDraw(){
+  const perm=ROLE_KEYS.slice().sort(()=>Math.random()-.5);const assign={};perm.forEach((k,i)=>assign[i+1]=k);
+  try{await dbNS.doc('lottery/c'+TT.cls).set({assign,ts:Date.now()});}catch(e){toast('제비뽑기를 저장하지 못했어요.');return;}
+  document.querySelectorAll('.lotv').forEach((el,i)=>{let n=0;const names=ROLE_KEYS.map(k=>TEAMS[k].name);const t=setInterval(()=>{el.textContent=names[(n+i)%5];n++;if(n>14+i*5){clearInterval(t);el.textContent=TEAMS[assign[i+1]].name;el.parentElement.style.setProperty('--tc',TEAMS[assign[i+1]].color);}},70);});
+}
+async function setPhase(p){try{await dbNS.doc('summit/c'+TT.cls).set({phase:p,auto:SUM.auto,ts:Date.now()});}catch(e){toast('단계를 바꾸지 못했어요.');}}
+async function resetClass(){
+  const ok=await askConfirm(`${TT.cls}반 기록을 모두 지울까요?`,'모둠 수사 기록, 제비뽑기 결과, 회담 발언이 모두 삭제됩니다.','모두 지우기');if(!ok)return;
+  try{const gs=await dbNS.collection('groups').where('cls','==',TT.cls).get();for(const d of gs.docs){await dbNS.doc('groups/c'+TT.cls+'-g'+d.data().grp).delete();}
+    const ms=await dbNS.collection('msgs').where('cls','==',TT.cls).get();for(const d of ms.docs){await dbNS.collection('msgs').doc(d.id).delete();}
+    toast('지웠습니다.');}catch(e){toast('일부 기록을 지우지 못했어요.');}
+}
+async function clearSummit(){const ok=await askConfirm('회담 기록을 지울까요?','이 반의 발언과 AI 중재 내용이 모두 삭제됩니다.','지우기');if(!ok)return;
+  try{const ms=await dbNS.collection('msgs').where('cls','==',TT.cls).get();for(const d of ms.docs)await dbNS.collection('msgs').doc(d.id).delete();const gs=SUM.groups;for(const g of gs){if(g.state&&g.state.joinedSummit){/* let teams rejoin */}}toast('회담 기록을 지웠습니다. 학생들이 회담장을 새로고침하면 다시 입장합니다.');}catch(e){toast('지우지 못했어요.');}}
+async function uploadMedia(k,file){
+  if(!assetsNS||!file)return;if(file.size>20*1024*1024){toast('20MB 이하 파일만 올릴 수 있어요.');return;}
+  toast('올리는 중…');
+  try{const r=await assetsNS.upload(file);const type=(r.contentType||file.type).startsWith('video')?'video':'image';const credit=($('#cr-'+k)||{}).value||'';
+    const next=Object.assign({},MEDIA,{[k]:{id:r.id,type,credit}});await dbNS.doc('media/slots').set({slots:next});toast('자료 화면을 등록했습니다.');}
+  catch(e){toast(e&&e.code==='quota_exceeded'?'저장 공간이 가득 찼어요.':'올리지 못했어요.');}
+}
+async function removeMedia(k){const next=Object.assign({},MEDIA);const old=next[k];delete next[k];try{await dbNS.doc('media/slots').set({slots:next});if(old&&assetsNS)assetsNS.delete(old.id).catch(()=>{});}catch(e){toast('삭제하지 못했어요.');}}
+async function saveCredit(k){const next=Object.assign({},MEDIA);if(!next[k])return;next[k]=Object.assign({},next[k],{credit:($('#cr-'+k)||{}).value||''});try{await dbNS.doc('media/slots').set({slots:next});toast('출처를 저장했습니다.');}catch(e){toast('저장하지 못했어요.');}}
+
+/* ---------- documentary playback (real footage slots) ---------- */
+const _playGraphic=playTravel;
+playTravel=function(m){
+  if(!m||m.from===m.to)return Promise.resolve();
+  const md=MEDIA[m.to];if(!md)return _playGraphic(m);
+  const ov=$('#travel'),cv=$('#tcv'),docEl=$('#tdoc'),img=$('#timg'),vid=$('#tvid'),fade=$('#tfade');
+  $('#tr').textContent=`${placeName(m.from)} → ${placeName(m.to)}`;
+  $('#td').textContent=m.to==='office'?'모은 증거를 들고 회담장으로':(m.days===0?'운 좋게 하루도 걸리지 않은 길':`${m.days}일 걸린 길`)+(m.w?' · '+EVENTS[m.w].t:'');
+  $('#tcredit').textContent='자료 화면'+(md.credit?' · '+md.credit:'');
+  cv.hidden=true;docEl.hidden=false;img.hidden=md.type!=='image';vid.hidden=md.type!=='video';
+  const dur=md.type==='video'?7000:6000;
+  if(md.type==='image'){img.src='/_blob/'+md.id;img.style.animation='none';void img.offsetWidth;img.style.animation=`kb ${dur}ms ease-in-out forwards`;}
+  else{vid.src='/_blob/'+md.id;vid.currentTime=0;vid.play().catch(()=>{});}
+  $('.tcap').style.opacity=1;ov.hidden=false;travelling=true;
+  fade.style.transition='none';fade.style.opacity=1;requestAnimationFrame(()=>{fade.style.transition='opacity .6s';fade.style.opacity=0;});
+  return new Promise(res=>{let done=false;const finish=()=>{if(done)return;done=true;fade.style.opacity=1;setTimeout(()=>{ov.hidden=true;cv.hidden=false;docEl.hidden=true;try{vid.pause();}catch(e){}travelling=false;res();},620);};
+    $('#tskip').onclick=finish;setTimeout(finish,dur);});
+};
+function placeName(k){return !k||k==='office'?'회담장':NODES[k].full;}
+
+/* ---------- actions ---------- */
+function arrive(to,days,w,note){
+  const from=S.loc;S.loc=to;S.visited[to]=true;S.mode='loc';S.lastMove={from:from||'office',to,days,w:w||null,note:note||'',id:Date.now()+Math.random()};
+  save();renderStatus();playTravel(S.lastMove).then(()=>{render();if(note)toast(note);});
+}
+function doReturn(){
+  askConfirm('회담장으로 귀환할까요?',`하루가 걸려 ${S.day+1}일째에 도착합니다.${S.day+1>SUMMIT_DAY?' 기한(15일)을 넘겨 지각입니다.':''} 귀환하면 다시 조사하러 나갈 수 없습니다.${G.on?' 모둠원 모두의 화면이 함께 넘어갑니다.':''}`,'귀환하기').then(ok=>{if(!ok)return;
+    spend(1);S.returned=true;S.returnDay=S.day;S.mode='paper';const lm={from:S.loc,to:'office',days:1,id:Date.now()+Math.random()};S.lastMove=lm;save();playTravel(lm).then(()=>{render();window.scrollTo({top:0,behavior:'smooth'});});});
+}
+function notebook(tab){
+  tab=tab||'people';const m=met();
+  const byWho=w=>S.clues.filter(c=>CLUES[c].who===w).map(c=>`<div class="clue"><b class="k-${CLUES[c].k}">${CLUES[c].k}</b>${esc(CLUES[c].t)}</div>`).join('');
+  let body='';
+  if(tab==='people')body=m.size?'ABCDEF'.split('').filter(k=>m.has(k)).map(k=>`<p class="sub">${k}. ${NPC[k].name}</p>${byWho(k)}`).join(''):'<p class="note">아직 만난 관계자가 없다.</p>';
+  if(tab==='land')body=byWho('T')||'<p class="note">아직 지형 단서가 없다. 장소마다 현장 조사를 할 수 있다.</p>';
+  if(tab==='paper')body=paperHTML()+'<p class="note">관련 증거를 찾으면 지워진 문장이 되살아난다.</p>';
+  $('#dlgbody').innerHTML=`<h3>수사 수첩</h3><div class="nb-tabs">${[['people','관계자 진술'],['land','지형 단서'],['paper','우리 정리문']].map(([id,l])=>`<button data-nb="${id}" aria-pressed="${tab===id}">${l}</button>`).join('')}</div><div style="max-height:60vh;overflow-y:auto">${body}</div><div class="row"><button class="btn" data-close>닫기</button></div>`;
+  if(!$('#dlg').open)$('#dlg').showModal();
+}
+
+/* ---------- group play ---------- */
+const GKEY='geo-summit-group';
+let dbNS=null,userNS=null,roomNS=null,assetsNS=null,groupReady=false,sampleFn=null,aiState='checking',busy=false,downloads=null;
+const G={on:false,cls:null,grp:null,name:'',ref:null,unsub:null,room:null,peers:[],me:Math.random().toString(36).slice(2),lastTs:0,teacher:false,applying:false,pt:null,readonly:false,unsubLot:null};
+async function joinGroup(saved){
+  const cls=saved?saved.cls:+$('#gcls').value,grp=saved?saved.grp:+$('#ggrp').value,name=saved?saved.name:($('#gname').value||'').trim();
+  const team=saved?null:($('#team').value||'').trim();
+  if(!saved&&!name){toast('내 이름을 먼저 적어 주세요.');$('#gname').focus();return;}
+  G.name=name;
+  if(!dbNS){S.cls=cls;S.grp=grp;if(team)S.team=team;save();render();return;}
+  const slug=`c${cls}-g${grp}`;
+  try{G.ref=dbNS.doc('groups/'+slug);G.cls=cls;G.grp=grp;
+    const snap=await G.ref.get();
+    if(snap.exists&&snap.data().state){adopt(snap.data(),true);}
+    else{S=fresh();S.cls=cls;S.grp=grp;S.team=team||`${cls}반 ${grp}모둠`;await doPush();}
+  }catch(err){G.ref=null;S.cls=cls;S.grp=grp;if(team)S.team=team;save();toast('다른 기기와 연결하지 못했어요. 이 기기 혼자 진행합니다.');render();return;}
+  G.on=true;try{localStorage.setItem(GKEY,JSON.stringify({cls,grp,name}));}catch(e){}
+  if(G.unsub)G.unsub();G.unsub=G.ref.onSnapshot(sn=>{if(sn.exists)adopt(sn.data());},()=>{});
+  if(roomNS){try{G.room=await roomNS.join(slug);await G.room.presence({name});G.room.onPeers(ch=>{G.peers=ch.peers.filter(p=>p.kind==='viewer');renderStatus();},()=>{});}catch(e){G.room=null;}}
+  subscribeSummit(cls);
+  render();if(!saved)toast(`${cls}반 ${grp}모둠으로 입장했습니다.`);
+}
+function autoDraw(){if(S.role||!S.cls||!S.grp)return;setTimeout(()=>{if(!S.role)setRole(autoRole(S.cls,S.grp),true);},350);}
+function pushGroup(){if(!G.on||!G.ref||G.applying||G.readonly)return;clearTimeout(G.pt);G.pt=setTimeout(()=>{doPush().catch(()=>{});},120);}
+async function doPush(){
+  S.v=(S.v||0)+1;G.lastTs=Date.now();
+  const st=JSON.parse(JSON.stringify(S));delete st.localSummit;
+  try{await G.ref.set({state:st,v:S.v,ts:G.lastTs,by:G.me,cls:S.cls,grp:S.grp,team:S.team||''});}
+  catch(err){if(err&&err.code==='invalid_argument'){G.readonly=true;toast('이 기기는 모둠 기록을 바꿀 권한이 없어요. 선생님께 알려 주세요.');}throw err;}
+}
+function adopt(d,force){
+  if(!d||!d.state)return;
+  if(!force){if(d.by===G.me)return;if(d.v<S.v)return;if(d.v===S.v&&d.ts<=G.lastTs)return;}
+  const prevMove=S.lastMove&&S.lastMove.id,prevMode=S.mode;
+  const localPaper=S.paper?Object.assign({},S.paper):null;
+  G.applying=true;S=Object.assign(fresh(),d.state);S.v=d.v;G.applying=false;
+  if(localPaper&&S.paper){['claim','demand','rebut'].forEach(f=>{if(!(S.paper[f]||'').trim()&&(localPaper[f]||'').trim())S.paper[f]=localPaper[f];});}
+  try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}
+  if($('#dlg').open&&$('#dlgbody [data-ev]'))$('#dlg').close();
+  if(teacherOpen)return;
+  const typing=document.activeElement&&['pclaim','pdemand','prebut','smsg'].includes(document.activeElement.id);
+  if(!force&&S.lastMove&&S.lastMove.id!==prevMove&&!travelling){renderStatus();playTravel(S.lastMove).then(render);}
+  else if(!travelling&&!(typing&&prevMode===S.mode))render();
+  else renderStatus();
+}
+
+/* ---------- opening cinematic: phantom hacker's notice ---------- */
+const Snd={ctx:null,on:true,master:null,
+  init(){try{this.ctx=new (window.AudioContext||window.webkitAudioContext)();this.master=this.ctx.createGain();this.master.gain.value=.5;this.master.connect(this.ctx.destination);}catch(e){this.ctx=null;}},
+  t(){return this.ctx?this.ctx.currentTime:0},
+  tone(f,d,type,v,at){if(!this.ctx||!this.on)return;const o=this.ctx.createOscillator(),g=this.ctx.createGain();o.type=type||'sine';o.frequency.value=f;const t=this.t()+(at||0);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v||.2,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(this.master);o.start(t);o.stop(t+d+.05);},
+  noise(d,v,f0,f1,at){if(!this.ctx||!this.on)return;const n=this.ctx.createBufferSource(),b=this.ctx.createBuffer(1,this.ctx.sampleRate*d,this.ctx.sampleRate),a=b.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=Math.random()*2-1;n.buffer=b;const fl=this.ctx.createBiquadFilter();fl.type='bandpass';const t=this.t()+(at||0);fl.frequency.setValueAtTime(f0||1200,t);fl.frequency.exponentialRampToValueAtTime(f1||f0||1200,t+d);const g=this.ctx.createGain();g.gain.setValueAtTime(v||.2,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);n.connect(fl);fl.connect(g);g.connect(this.master);n.start(t);},
+  drone(){if(!this.ctx)return;this.dr=[55,82.4,110.5].map((f,i)=>{const o=this.ctx.createOscillator(),g=this.ctx.createGain(),lp=this.ctx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=420;o.type=i?'sawtooth':'sine';o.frequency.value=f;g.gain.value=0;g.gain.linearRampToValueAtTime(this.on?(.07/(i+1)):0,this.t()+3);o.connect(lp);lp.connect(g);g.connect(this.master);o.start();return {o,g};});},
+  stopDrone(){if(this.dr){this.dr.forEach(({o,g})=>{try{g.gain.linearRampToValueAtTime(0,this.t()+1);o.stop(this.t()+1.1);}catch(e){}});this.dr=null;}},
+  key(){this.noise(.03,.12,3000,2000);},glitch(){this.noise(.35,.35,400,4000);this.tone(90,.4,'square',.12);},
+  whoosh(){this.noise(1.1,.35,300,3500);},alert(){[0,.35,.7].forEach(a=>{this.tone(880,.18,'square',.12,a);this.tone(660,.18,'square',.12,a+.18);});},
+  hit(){this.tone(60,1.4,'sine',.5);this.noise(.5,.3,200,80);},chime(){[523,659,784].forEach((f,i)=>this.tone(f,1.4,'triangle',.15,i*.12));}
+};
+let introAbort=false;
+const isleep=ms=>new Promise(r=>{const t0=performance.now();const tick=()=>{if(introAbort||performance.now()-t0>=ms)r();else requestAnimationFrame(tick);};tick();});
+async function typeInto(el,text,speed,snd){el.textContent='';for(const ch of text){if(introAbort){el.textContent=text;return;}el.textContent+=ch;if(snd&&ch.trim())Snd.key();await isleep(speed);}}
+function introHTML(){
+  const docs=ROLE_KEYS.map(k=>`<div class="i-doc" style="--tc:${TEAMS[k].color}"><h5>${TEAMS[k].name} 입장정리문</h5>${'<i></i>'.repeat(7)}</div>`).join('');
+  const fig=`<svg class="fig" viewBox="0 0 400 520" aria-hidden="true"><defs><radialGradient id="eg"><stop offset="0" stop-color="#bff6ff"/><stop offset="1" stop-color="#5FE3FF" stop-opacity="0"/></radialGradient></defs>
+    <path d="M200 40 C120 40 92 110 96 170 C98 205 112 230 118 250 C60 280 30 340 22 520 L378 520 C370 340 340 280 282 250 C288 230 302 205 304 170 C308 110 280 40 200 40 Z" fill="#020407"/>
+    <path d="M200 70 C150 70 128 120 130 165 C132 200 150 228 200 232 C250 228 268 200 270 165 C272 120 250 70 200 70 Z" fill="#0b1118"/>
+    <path d="M140 150 L260 150 L250 178 L210 186 L200 176 L190 186 L150 178 Z" fill="#0f1c26" stroke="#5FE3FF" stroke-width="2" opacity=".85"/>
+    <circle class="eye" cx="172" cy="165" r="9" fill="url(#eg)"/><circle class="eye" cx="228" cy="165" r="9" fill="url(#eg)"/>
+    <path d="M110 420 Q200 380 290 420 L300 470 L100 470 Z" fill="#06090e"/></svg>`;
+  return `<button class="iskip" data-intro="skip">건너뛰기</button><button class="imute" data-intro="mute">소리 켜짐</button>
+  <div class="sc i-title on" id="i0"><span class="stamp2">TOP SECRET</span><h2>사건 파일 #0315</h2><p style="color:#9fb0c8;margin:0">얄룽창포강 협상 회담 · 보름 전</p><button data-intro="start">사건 파일 열기</button><p style="color:#6d7a90;font-size:13px;margin:0">소리가 나옵니다</p></div>
+  <div class="sc i-room bars" id="i1"><div class="glow"></div><div class="i-iot" id="iiot">${[['💡','스마트 조명'],['📷','보안 카메라'],['🔊','스마트 스피커'],['🖨️','네트워크 프린터'],['🌡️','온도 센서']].map(([e,l])=>`<div><b>${e}</b>${l}</div>`).join('')}</div>
+    <div class="mons"><div class="mon" id="m1"></div><div class="mon" id="m2"></div><div class="mon" id="m3"></div></div>${fig}</div>
+  <div class="sc i-docs bars" id="i2">${docs}</div>
+  <div class="sc i-card bars" id="i3"><div class="card3" id="card3"><svg viewBox="0 0 60 60"><path d="M30 6 C30 6 12 28 12 39 A18 18 0 0 0 48 39 C48 28 30 6 30 6 Z" fill="none" stroke="#5FE3FF" stroke-width="2.5"/><path d="M20 40 Q30 33 40 40 Q30 47 20 40" fill="none" stroke="#5FE3FF" stroke-width="2"/></svg><div class="t">예 고 장</div><p id="cl1"></p><p id="cl2"></p><p id="cl3"></p><p class="sig" id="cl4"></p></div></div>
+  <div class="sc i-news bars" id="i4"><div class="flash3">긴급 속보</div><div class="head" id="nhead"></div><div class="ticker"><span>다섯 대표단 입장정리문 해킹 피해 … 사물인터넷 기기 통한 침입 추정 … 회담 15일 앞두고 비상 … 각 대표단, 비밀 조사 탐정 파견 검토 … 범인은 스스로를 "괴도 물그림자"라 불러 …</span></div></div>
+  <div class="sc i-letter" id="i5"><div class="env" id="env"><div class="back"></div><div class="paper"><h4>의 뢰 장</h4><b>지리 탐정단 귀하</b><br>저희 다섯 대표단의 입장정리문이 괴도 물그림자의 해킹으로 사라졌습니다. 남은 것은 한 문장씩뿐입니다.<br>얄룽창포강을 따라 흩어진 증거를 모아 정리문을 되살리고, <b>보름 안에</b> 회담장으로 돌아와 주십시오.<br><span style="float:right">— 다섯 대표단 일동</span></div><div class="flap"></div><div class="front"></div><div class="seal">긴급</div></div><button class="accept" id="accept" data-intro="accept">의뢰 수락하기</button></div>
+  <div class="cap" id="icap"></div>`;
+}
+function scene(n){document.querySelectorAll('#intro .sc').forEach((el,i)=>el.classList.toggle('on',el.id==='i'+n));}
+async function runIntro(){
+  const cap=$('#icap');
+  Snd.drone();
+  // 1. hacker room
+  scene(1);
+  const code=['> scan iot.delegations.net','> 5 devices found','> bypass auth ......','> ACCESS GRANTED','> locate /papers/*.doc','> 5 files','> overwrite --keep=1'];
+  const ms=['#m1','#m2','#m3'].map(q=>$(q));
+  (async()=>{for(let i=0;i<code.length&&!introAbort;i++){ms.forEach((m,j)=>{m.textContent=(m.textContent+'\n'+code[(i+j)%code.length]).split('\n').slice(-9).join('\n');});Snd.key();await isleep(520);}ms.forEach(m=>m.classList.add('red'));})();
+  await typeInto(cap,'회담을 보름 앞둔 밤, 누군가 대표단 사무실의 네트워크에 숨어들었다.',55);
+  await isleep(900);
+  const iot=[...document.querySelectorAll('#iiot div')];
+  cap.textContent='';typeInto(cap,'조명, 카메라, 스피커… 사물인터넷 기기가 하나씩 그의 손에 넘어갔다.',55);
+  for(const d of iot){d.classList.add('on');await isleep(380);d.classList.add('hit');Snd.tone(1200,.08,'square',.08);await isleep(200);}
+  await isleep(1500);
+  // 2. documents erased
+  scene(2);cap.textContent='';
+  const docs=[...document.querySelectorAll('.i-doc')];docs.forEach((d,i)=>setTimeout(()=>d.classList.add('on'),i*140));
+  await typeInto(cap,'다섯 대표단이 공들여 쓴 입장정리문이 모니터 위에 떠올랐다.',50);
+  await isleep(700);Snd.glitch();$('#i2').classList.add('i-glitch');
+  for(let row=1;row<7;row++){docs.forEach(d=>{const ii=d.querySelectorAll('i')[row];if(ii)ii.classList.add('x');});Snd.noise(.08,.15,1800,900);await isleep(170);}
+  docs.forEach(d=>d.querySelector('i').classList.add('keep'));
+  cap.textContent='';await typeInto(cap,'그리고 한순간에, 모든 문서가 지워졌다. 남은 것은 단 한 문장씩.',55);
+  await isleep(1400);
+  // 3. calling card
+  scene(3);cap.textContent='';Snd.whoosh();await isleep(150);$('#card3').classList.add('on');await isleep(1500);Snd.hit();
+  await typeInto($('#cl1'),'보름 뒤 열리는 회담에서, 너희의 "주장"은 이미 내 손에 있다.',45,true);
+  await typeInto($('#cl2'),'남겨 둔 한 문장으로 무엇을 증명할 수 있을지',45,true);
+  await typeInto($('#cl3'),'강을 따라 흩어진 진실을 찾아보시지.',45,true);
+  await typeInto($('#cl4'),'— 괴도 물그림자',70,true);
+  await isleep(1800);
+  // 4. breaking news
+  scene(4);Snd.stopDrone();Snd.alert();await isleep(400);
+  await typeInto($('#nhead'),'협상 회담 앞둔 다섯 대표단, 입장정리문 해킹으로 비상',45);
+  cap.textContent='';await typeInto(cap,'회담까지 남은 시간은 보름. 대표단들은 마지막 수단을 꺼내 들었다.',55);
+  await isleep(1600);
+  // 5. request letter to the detectives
+  scene(5);cap.textContent='';await isleep(300);Snd.whoosh();$('#env').classList.add('on');await isleep(1500);
+  Snd.noise(.4,.15,2500,1200);$('#env').classList.add('open');await isleep(1500);Snd.chime();
+  $('#accept').classList.add('on');
+}
+function openIntro(){
+  introAbort=false;let el=$('#intro');if(!el){el=document.createElement('div');el.id='intro';document.body.appendChild(el);}
+  el.innerHTML=introHTML();el.hidden=false;document.body.style.overflow='hidden';
+}
+function closeIntro(){introAbort=true;Snd.stopDrone();const el=$('#intro');if(el){el.hidden=true;el.innerHTML='';}document.body.style.overflow='';try{localStorage.setItem('geo-summit-intro','1');}catch(e){}}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-intro]');if(!b)return;const a=b.dataset.intro;
+  if(a==='start'){if(!Snd.ctx)Snd.init();if(Snd.ctx&&Snd.ctx.state==='suspended')Snd.ctx.resume();runIntro();}
+  if(a==='skip'||a==='accept')closeIntro();
+  if(a==='mute'){Snd.on=!Snd.on;b.textContent=Snd.on?'소리 켜짐':'소리 꺼짐';if(Snd.master)Snd.master.gain.value=Snd.on?.5:0;}
+});
+
+/* ---------- change class / group ---------- */
+async function regroup(){
+  const msg=S.started?'지금까지 이 기기에서 한 조사를 떠나 처음 화면으로 돌아갑니다. 모둠원 다른 기기의 기록은 그대로 남습니다.':'반과 모둠을 다시 고를 수 있습니다. 대표단은 새로 고른 반·모둠에 따라 다시 뽑습니다.';
+  const ok=await askConfirm('반·모둠을 다시 고를까요?',msg,'다시 고르기');if(!ok)return;
+  if(G.unsub)G.unsub();G.unsub=null;if(G.unsubLot)G.unsubLot();G.unsubLot=null;if(G.room){G.room.leave().catch(()=>{});G.room=null;}
+  G.on=false;G.ref=null;G.peers=[];G.readonly=false;try{localStorage.removeItem(GKEY);}catch(e){}
+  if(SUM.unsubM)SUM.unsubM();if(SUM.unsubG)SUM.unsubG();SUM.cls=null;SUM.msgs=[];SUM.groups=[];
+  const keepName=S.team;S=fresh();S.team=keepName;try{localStorage.removeItem(KEY);}catch(e){}save();render();window.scrollTo({top:0});
+}
+/* ---------- events ---------- */
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button,[data-node]');if(!t)return;
+  if(t.dataset.cf){const r=cfResolve;cfResolve=null;$('#dlg').close();if(r)r(t.dataset.cf==='yes');return;}
+  if(t.dataset.node){if(t.classList.contains('reach')&&!travelling)travel(t.dataset.node);return;}
+  if(t.dataset.zoom){setZoom(t.dataset.zoom);return;}
+  if(t.dataset.go){travel(t.dataset.go);return;}
+  if(t.dataset.talk){startTalk(t.dataset.talk);return;}
+  if(t.dataset.obs){observe(t.dataset.obs);return;}
+  if(t.dataset.q!==undefined){ask(+t.dataset.q);return;}
+  if(t.dataset.ev){resolveEvent(t.dataset.ev);return;}
+  if(t.dataset.risk){const d=$('#dlg'),to=d.dataset.to,w=d.dataset.w,ok=d.dataset.result==='ok';d.close();spend(ok?0:2);arrive(to,ok?0:2,w,ok?'운이 좋았다! 하루도 쓰지 않고 도착했다.':'위험을 만나 이틀이 걸렸다.');return;}
+  if(t.dataset.nb){notebook(t.dataset.nb);return;}
+  if(t.dataset.close!==undefined){$('#dlg').close();return;}
+  if(t.dataset.depart){S.started=true;spend(1);arrive(t.dataset.depart,1);return;}
+  if(t.dataset.pickrole){setRole(t.dataset.pickrole,false);return;}
+  if(t.dataset.ev2){const c=t.dataset.ev2,i=SUM.sel.indexOf(c);if(i>=0)SUM.sel.splice(i,1);else{if(SUM.sel.length>=3){toast('증거는 한 번에 3개까지 제시할 수 있어요.');return;}SUM.sel.push(c);}t.setAttribute('aria-pressed',SUM.sel.includes(c));return;}
+  if(t.dataset.ttab){TT.tab=t.dataset.ttab;renderTeacher();return;}
+  if(t.dataset.ai){const M=meeting();const last=[...M.ms].reverse().find(m=>m.kind==='team');aiSay(t.dataset.ai,t.dataset.ai==='reply'?last:undefined);return;}
+  if(t.dataset.unmedia){removeMedia(t.dataset.unmedia);return;}
+  if(t.dataset.savecr){saveCredit(t.dataset.savecr);return;}
+  const a=t.dataset.act;
+  if(a==='notebook')notebook();
+  if(a==='regroup')regroup();
+  if(a==='replayintro')openIntro();
+  if(a==='teacher'){teacherOpen=!teacherOpen;if(teacherOpen&&!TT.unsubG)teacherSubscribe();render();}
+  if(a==='joingroup')joinGroup();
+  if(a==='drawrole'){if(S.role||!S.cls||!S.grp)return;t.disabled=true;setRole(autoRole(S.cls,S.grp),true);}
+  if(a==='tobrief'){S.mode='brief';save();render();}
+  if(a==='depart'){S.started=true;spend(1);arrive(TEAMS[S.role].home,1);}
+  if(a==='endtalk'){S.mode='loc';S.talk=null;save();render();}
+  if(a==='return')doReturn();
+  if(a==='submitpaper'){const P=S.paper;
+    const val=id=>{const el=document.getElementById(id);return el?el.value:null;};
+    ['claim','demand','rebut'].forEach(f=>{const v=val('p'+f);if(v!==null&&v.trim())P[f]=v;});
+    P.submitted=true;save();toast('정리문을 확정했습니다. 협상 회담장으로 입장합니다.');enterSummit();}
+  if(a==='editpaper'){S.paper.submitted=false;save();render();}
+  if(a==='tosummit'){enterSummit();}
+  if(a==='sendmsg')sendMsg();
+  if(a==='draw')teacherDraw();
+  if(a==='resetclass')resetClass();
+  if(a==='clearsummit')clearSummit();
+  if(a==='sysmsg'){const v=($('#sysin').value||'').trim();if(v&&dbNS){dbNS.collection('msgs').add({cls:TT.cls,kind:'sys',text:v,ts:Date.now()}).then(()=>{$('#sysin').value='';}).catch(()=>toast('보내지 못했어요.'));}}
+});
+document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.dataset&&e.target.dataset.node){e.preventDefault();if(!travelling)travel(e.target.dataset.node);}});
+document.addEventListener('input',e=>{const id=e.target.id;
+  if(id==='team'){S.team=e.target.value;}
+  if(id==='pclaim'||id==='pdemand'||id==='prebut'){S.paper=S.paper||{claim:'',demand:'',rebut:'',submitted:false};}
+  if(id==='pclaim'){S.paper.claim=e.target.value;save();}if(id==='pdemand'){S.paper.demand=e.target.value;save();}if(id==='prebut'){S.paper.rebut=e.target.value;save();}});
+document.addEventListener('change',e=>{const t=e.target;
+  if(t.id==='tcls'){TT.cls=+t.value;teacherSubscribe();renderTeacher();}
+  if(t.dataset&&t.dataset.upload&&t.files&&t.files[0])uploadMedia(t.dataset.upload,t.files[0]);});
+document.addEventListener('submit',e=>{if(e.target.id==='freef'){e.preventDefault();const v=$('#freein').value.trim();if(v)freeAsk(v);}});
+$('#dlg').addEventListener('cancel',e=>{if($('#dlgbody [data-ev]')||$('#coin'))e.preventDefault();});
+$('#dlg').addEventListener('close',()=>{if(cfResolve){const r=cfResolve;cfResolve=null;r(false);}});
+window.addEventListener('resize',()=>document.querySelectorAll('canvas.banner').forEach(drawBanner));
+$('#reset').addEventListener('click',()=>{askConfirm('처음부터 다시 시작할까요?',G.on?'우리 모둠의 수사 기록이 모두 지워지고, 모둠원 모두의 화면이 처음으로 돌아갑니다.':'이 기기의 기록이 모두 지워집니다.','처음부터 다시').then(ok=>{if(!ok)return;const kv=S.v,c=S.cls,g=S.grp,tm=S.team;S=fresh();S.v=kv;if(G.on){S.cls=c;S.grp=g;S.team=tm;}try{localStorage.removeItem(KEY);}catch(e){}save();render();});});
+
+async function initCaps(){
+  render();
+  try{if(!localStorage.getItem('geo-summit-intro')&&S.mode==='lobby'&&!S.role)openIntro();}catch(e){openIntro();}
+  if(!window.claude||!window.claude.use){aiState='off';groupReady=true;render();return;}
+  try{sampleFn=await window.claude.use('sample');}catch(e){sampleFn=null;}aiState=sampleFn?'on':'off';
+  try{downloads=await window.claude.use('downloads');}catch(e){}
+  try{dbNS=await window.claude.use('db');}catch(e){dbNS=null;}
+  try{userNS=await window.claude.use('user');}catch(e){}
+  try{roomNS=await window.claude.use('room');}catch(e){}
+  try{assetsNS=await window.claude.use('assets');}catch(e){}
+  if(userNS){try{G.teacher=await userNS.isOwner();}catch(e){}}
+  if(dbNS){dbNS.doc('media/slots').onSnapshot(d=>{MEDIA=(d.exists&&d.data().slots)||{};if(teacherOpen&&TT.tab==='media')paintTeacherBody();},()=>{});}
+  groupReady=true;render();
+  try{const g=JSON.parse(localStorage.getItem(GKEY)||'null');if(g&&dbNS)joinGroup(g);}catch(e){}
+  if(dbNS&&S.cls&&S.mode==='summit')subscribeSummit(S.cls);
+}
+initCaps();
+
+</script>
+</body>
+</html>
